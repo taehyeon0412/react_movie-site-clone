@@ -10,16 +10,18 @@ function App() {
     <HashRouter basename={process.env.PUBLIC_URL}>
       <Header />
       <Switch>
-        <Route path="/">
-          <Home />
-        </Route>
-
         <Route path="/tv">
           <Tv />
         </Route>
 
+        <Route path="/movie"></Route>
+
         <Route path="/search">
           <Search />
+        </Route>
+
+        <Route path="/">
+          <Home />
         </Route>
       </Switch>
     </HashRouter>
