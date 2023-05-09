@@ -1,16 +1,20 @@
 import styled from "styled-components";
-import { motion } from "framer-motion";
+import {
+  motion,
+  useAnimation,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
 import { Link, useRouteMatch } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const Nav = styled.nav`
+const Nav = styled(motion.nav)`
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: fixed;
   width: 100%;
   top: 0;
-  background-color: black;
   font-size: 16px;
   font-weight: 700;
   padding: 10px 60px;
@@ -89,7 +93,15 @@ const Search = styled.span`
 const Input = styled(motion.input)`
   transform-origin: right center; //애니메이션이 어디부터 시작되는지
   position: absolute;
-  left: -11.5rem;
+  width: 18.5rem;
+  left: -15rem;
+  padding: 5px 10px;
+  padding-left: 40px;
+  font-size: 1rem;
+  z-index: -1;
+  color: white;
+  background-color: transparent;
+  border: 1px solid ${(props) => props.theme.white.lighter};
 `;
 
 const logoVar = {
@@ -102,14 +114,32 @@ const logoVar = {
 };
 //로고 애니메이션
 
+const navVar = {
+  top: {
+    backgroundColor: "rgb(0,0,0,0)",
+  },
+  scroll: {
+    backgroundColor: "rgba(0,0,0,1)",
+  },
+};
+//스크롤 애니메이션
+
 function Header() {
   const tvMatch = useRouteMatch("/tv");
   const movieMatch = useRouteMatch("/movie");
   const [searchOpen, setSearchOpen] = useState(false);
+  const { scrollYProgress } = useScroll(); //scrollYProgress는 0~1사이 소수점값
+  const navAnimation = useAnimation();
   const toggleSearch = () => setSearchOpen((prev) => !prev);
 
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest < 0.1) navAnimation.start("top");
+    else navAnimation.start("scroll");
+    console.log(latest);
+  }); //스크롤할때 값을 읽어서내서 알려줌
+
   return (
-    <Nav>
+    <Nav variants={navVar} initial="top" animate={navAnimation}>
       <Column>
         <Logo
           variants={logoVar}
@@ -142,7 +172,7 @@ function Header() {
         <Search>
           <motion.svg
             onClick={toggleSearch}
-            animate={{ x: searchOpen ? `-13.5rem` : 0 }}
+            animate={{ x: searchOpen ? `-14.5rem` : 0 }}
             transition={{ type: "linear" }}
             fill="currentColor"
             viewBox="0 0 20 20"
