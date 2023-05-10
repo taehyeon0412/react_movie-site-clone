@@ -135,7 +135,7 @@ function Header() {
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (latest < 0.1) navAnimation.start("top");
     else navAnimation.start("scroll");
-    console.log(latest);
+    //console.log(latest);
   }); //스크롤할때 값을 읽어서내서 알려줌
 
   return (
