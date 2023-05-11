@@ -10,6 +10,7 @@ const Wrapper = styled.div`
   background-color: black;
   overflow-x: hidden;
   padding-bottom: 10rem;
+  user-select: none;
 `;
 //전체화면
 
@@ -75,6 +76,7 @@ const Box = styled(motion.div)<{ bgphoto: string }>`
   background-image: url(${(props) => props.bgphoto});
   background-size: cover;
   background-position: center center;
+
   &:hover {
     cursor: pointer;
   }
@@ -94,6 +96,33 @@ const boxVar = {
   hover: {
     y: -30,
     scale: 1.4,
+    transition: {
+      delay: 0.5,
+      type: "tween",
+    },
+  },
+};
+//박스 애니메이션
+
+const MovieInfo = styled(motion.div)`
+  padding: 10px;
+  background-color: ${(props) => props.theme.black.lighter};
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  h4 {
+    text-align: center;
+    color: white;
+    font-size: 0.8rem;
+    font-weight: 800;
+  }
+`;
+//박스 영화 hover 정보
+
+const movieInfoVar = {
+  hover: {
+    opacity: 1,
     transition: {
       delay: 0.5,
       type: "tween",
@@ -149,7 +178,7 @@ function Home() {
                 initial={{ x: width + 5 }}
                 animate={{ x: 0 }}
                 exit={{ x: -width - 5 }}
-                transition={{ type: "tween", duration: 1 }}
+                transition={{ type: "tween", duration: 0.5 }}
                 key={index}
               >
                 {data?.results
@@ -163,7 +192,11 @@ function Home() {
                       whileHover="hover"
                       initial="normal"
                       transition={{ type: "tween" }}
-                    ></Box>
+                    >
+                      <MovieInfo variants={movieInfoVar}>
+                        <h4>{movie.title}</h4>
+                      </MovieInfo>
+                    </Box>
                   ))}
               </Row>
             </AnimatePresence>
