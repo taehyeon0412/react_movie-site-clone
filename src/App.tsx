@@ -20,7 +20,7 @@ function App() {
           <Search />
         </Route>
 
-        <Route path="/">
+        <Route path={["/", "/movies/:movieID"]}>
           <Home />
         </Route>
       </Switch>

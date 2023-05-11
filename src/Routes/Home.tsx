@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { makeImagePath } from "../utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { useHistory, useRouteMatch } from "react-router-dom";
 import useWindowDimensions from "../useWindow";
 
 const Wrapper = styled.div`
@@ -129,6 +130,7 @@ const movieInfoVar = {
     },
   },
 };
+//박스 영화 hover 애니메이션
 
 const offset = 5; //Box에 담는 영화개수(자르는 개수)
 
@@ -158,6 +160,14 @@ function Home() {
   const toggleLeaving = () => setLeaving((prev) => !prev);
   //onExitComplete에 넣어서 exit의 애니메이션이 끝나고 나서 함수가 실행되게함
 
+  const bigMovieMatch = useRouteMatch<{ movieID: string }>("/movies/:movieID");
+  const history = useHistory(); //useHistory훅은 url를 왔다갔다 할 수 있음
+  const onBoxClicked = (movieID: number) => {
+    // console.log(movieID);
+    history.push(`/movies/${movieID}`);
+  };
+  //클릭하고 있는 박스의 영화ID찾기
+
   return (
     <Wrapper>
       {isLoading ? (
@@ -171,6 +181,7 @@ function Home() {
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
           </Banner>
+          {/* 배너 */}
 
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
@@ -186,12 +197,15 @@ function Home() {
                   .slice(offset * index, offset * index + offset) //5*0,5*0+5 =>0~5번째까지
                   .map((movie) => (
                     <Box
+                      layoutId={movie.id + ""}
                       key={movie.id}
                       bgphoto={makeImagePath(movie.backdrop_path, "w500")}
                       variants={boxVar}
                       whileHover="hover"
                       initial="normal"
                       transition={{ type: "tween" }}
+                      onClick={() => onBoxClicked(movie.id)}
+                      //박스를 클릭하면 onBoxClicked호출 movie.id를 보냄
                     >
                       <MovieInfo variants={movieInfoVar}>
                         <h4>{movie.title}</h4>
@@ -201,6 +215,24 @@ function Home() {
               </Row>
             </AnimatePresence>
           </Slider>
+          {/* 슬라이더 */}
+          <AnimatePresence>
+            {bigMovieMatch ? (
+              <motion.div
+                layoutId={bigMovieMatch.params.movieID}
+                style={{
+                  position: "absolute",
+                  width: "40vw",
+                  height: "80vh",
+                  backgroundColor: "blue",
+                  top: 50,
+                  left: 0,
+                  right: 0,
+                  margin: "0 auto",
+                }}
+              />
+            ) : null}
+          </AnimatePresence>
         </>
       )}
     </Wrapper>
