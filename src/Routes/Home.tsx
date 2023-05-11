@@ -4,10 +4,12 @@ import styled from "styled-components";
 import { makeImagePath } from "../utils";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import useWindowDimensions from "../useWindow";
 
 const Wrapper = styled.div`
   background-color: black;
   overflow-x: hidden;
+  padding-bottom: 10rem;
 `;
 //전체화면
 
@@ -58,43 +60,51 @@ const Slider = styled.div`
 
 const Row = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 5px;
   position: absolute;
   width: 100%;
 `;
 //슬라이더 열
 
-const Box = styled(motion.div)`
+const Box = styled(motion.div)<{ bgPhoto: string }>`
   background-color: white;
   height: 8rem;
   color: red;
   font-size: 20px;
+  background-image: url(${(props) => props.bgPhoto});
+  background-size: cover;
+  background-position: center center;
 `;
 //슬라이더 내용
 
-const rowVar = {
-  hidden: {
-    x: window.innerWidth + 10,
-  },
-  visible: {
-    x: 0,
-  },
-  exit: {
-    x: -window.innerWidth - 10,
-  },
-};
-//슬라이더 애니메이션 variants
+const offset = 5; //Box에 담는 영화개수(자르는 개수)
 
 function Home() {
+  const width = useWindowDimensions(); //window width 추적
   const { data, isLoading } = useQuery<IGetMoviesResult>(
     ["movies", "nowPlaying"],
-    getMovies
+    getMovies //fetch한 API
   );
   //console.log(data, isLoading);
 
   const [index, setIndex] = useState(0); //슬라이더 인덱스
-  const increaseIndex = () => setIndex((prev) => prev + 1); //인덱스 1만큼 증가
+  const [leaving, setLeaving] = useState(false); //슬라이더 상태
+
+  const increaseIndex = () => {
+    if (data) {
+      if (leaving) return;
+      /* leaving이 true이면 리턴(아무것도 하지않음) 클릭을 여러번 연속으로 하면 
+        간격이 벌어지는 버그 수정하기 위해 인덱스 증가 안되게함*/
+      toggleLeaving();
+      const totalMovies = data.results.length - 1; //총 영화 개수 - 배너영화
+      const maxIndex = Math.ceil(totalMovies / offset) - 1; //올림=> 나눗셈이 4.2개 이면 올림해서 5개로만들어서 새로운 공간을 만듦
+      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1)); //maxIndex가 아니면 인덱스 1만큼 증가
+    }
+  };
+
+  const toggleLeaving = () => setLeaving((prev) => !prev);
+  //onExitComplete에 넣어서 exit의 애니메이션이 끝나고 나서 함수가 실행되게함
 
   return (
     <Wrapper>
@@ -104,25 +114,30 @@ function Home() {
         <>
           <Banner
             onClick={increaseIndex}
-            bgPhoto={makeImagePath(data?.results[1].backdrop_path || "")}
+            bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}
           >
-            <Title>{data?.results[1].title}</Title>
-            <Overview>{data?.results[1].overview}</Overview>
+            <Title>{data?.results[0].title}</Title>
+            <Overview>{data?.results[0].overview}</Overview>
           </Banner>
 
           <Slider>
-            <AnimatePresence>
+            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
-                variants={rowVar}
-                initial="hidden"
-                animate="visible"
-                exit="exit"
+                initial={{ x: width + 5 }}
+                animate={{ x: 0 }}
+                exit={{ x: -width - 5 }}
                 transition={{ type: "tween", duration: 1 }}
                 key={index}
               >
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <Box key={i}>{i}</Box>
-                ))}
+                {data?.results
+                  .slice(1) //배너에 있는 영화를 제외해야되니까 먼저 첫번째 영화를 슬라이스해줌
+                  .slice(offset * index, offset * index + offset) //5*0,5*0+5 =>0~5번째까지
+                  .map((movie) => (
+                    <Box
+                      key={movie.id}
+                      bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                    ></Box>
+                  ))}
               </Row>
             </AnimatePresence>
           </Slider>
@@ -141,3 +156,5 @@ export default Home;
   || "" 빈string을 보내라고 하면 해결된다*/
 
 /*AnimatePresence는 자식 컴포넌트가 render되거나 destroy될 때 효과를 준다  */
+
+/* onExitComplete => 여기에 함수를 넣으면 exit가 끝났을때 함수가 실행됨*/

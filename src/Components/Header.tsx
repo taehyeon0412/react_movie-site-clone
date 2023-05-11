@@ -185,6 +185,7 @@ function Header() {
             ></path>
           </motion.svg>
           <Input
+            initial={false}
             transition={{ type: "linear" }}
             animate={{ scaleX: searchOpen ? 1 : 0 }}
             placeholder="제목, 장르, 배우로 검색해보세요."
@@ -197,3 +198,6 @@ function Header() {
 }
 
 export default Header;
+
+/* initial={false}로 하는이유
+=>새로고침시 애니메이션이 실행되지 않기 위해 */
