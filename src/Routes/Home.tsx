@@ -95,10 +95,10 @@ const boxVar = {
     scale: 1,
   },
   hover: {
-    y: -30,
+    y: -50,
     scale: 1.4,
     transition: {
-      delay: 0.5,
+      delay: 0.8,
       type: "tween",
     },
   },
@@ -109,9 +109,7 @@ const MovieInfo = styled(motion.div)`
   padding: 10px;
   background-color: ${(props) => props.theme.black.lighter};
   opacity: 0;
-  position: absolute;
   width: 100%;
-  bottom: 0;
   h4 {
     text-align: center;
     color: white;
@@ -119,7 +117,7 @@ const MovieInfo = styled(motion.div)`
     font-weight: 800;
   }
 `;
-//박스 영화 hover 정보
+//박스 영화 hover 모달창
 
 const movieInfoVar = {
   hover: {
@@ -130,7 +128,30 @@ const movieInfoVar = {
     },
   },
 };
-//박스 영화 hover 애니메이션
+//박스 hover 모달창 애니메이션
+
+const Overlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+`;
+//모달창 오버레이
+
+const MovieModal = styled(motion.div)`
+  position: fixed;
+  background-color: blue;
+  width: 60vw;
+  height: 70vh;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+`;
+//박스 클릭 모달창
 
 const offset = 5; //Box에 담는 영화개수(자르는 개수)
 
@@ -158,7 +179,7 @@ function Home() {
   };
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
-  //onExitComplete에 넣어서 exit의 애니메이션이 끝나고 나서 함수가 실행되게함
+  //onExitComplete 에 넣어서 exit의 애니메이션이 끝나고 나서 함수가 실행되게함
 
   const bigMovieMatch = useRouteMatch<{ movieID: string }>("/movies/:movieID");
   const history = useHistory(); //useHistory훅은 url를 왔다갔다 할 수 있음
@@ -167,6 +188,7 @@ function Home() {
     history.push(`/movies/${movieID}`);
   };
   //클릭하고 있는 박스의 영화ID찾기
+  const onOverlayClick = () => history.push("/");
 
   return (
     <Wrapper>
@@ -186,10 +208,10 @@ function Home() {
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
-                initial={{ x: width + 5 }}
+                initial={{ x: width }}
                 animate={{ x: 0 }}
-                exit={{ x: -width - 5 }}
-                transition={{ type: "tween", duration: 0.5 }}
+                exit={{ x: -width }}
+                transition={{ type: "tween", duration: 1 }}
                 key={index}
               >
                 {data?.results
@@ -216,23 +238,20 @@ function Home() {
             </AnimatePresence>
           </Slider>
           {/* 슬라이더 */}
+
           <AnimatePresence>
             {bigMovieMatch ? (
-              <motion.div
-                layoutId={bigMovieMatch.params.movieID}
-                style={{
-                  position: "absolute",
-                  width: "40vw",
-                  height: "80vh",
-                  backgroundColor: "blue",
-                  top: 50,
-                  left: 0,
-                  right: 0,
-                  margin: "0 auto",
-                }}
-              />
+              <>
+                <Overlay
+                  onClick={onOverlayClick}
+                  exit={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                />
+                <MovieModal layoutId={bigMovieMatch.params.movieID} />
+              </>
             ) : null}
           </AnimatePresence>
+          {/* 영화 클릭 모달창 */}
         </>
       )}
     </Wrapper>
