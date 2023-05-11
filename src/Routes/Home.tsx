@@ -21,7 +21,7 @@ const Loader = styled.div`
 `;
 //로딩
 
-const Banner = styled.div<{ bgPhoto: string }>`
+const Banner = styled.div<{ bgphoto: string }>`
   height: 100vh;
   background-color: black;
   display: flex;
@@ -34,7 +34,7 @@ const Banner = styled.div<{ bgPhoto: string }>`
       rgba(0, 0, 0, 0.6)
     ),
     linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.bgPhoto});
+    url(${(props) => props.bgphoto});
   background-size: cover;
 `;
 //배너
@@ -67,16 +67,39 @@ const Row = styled(motion.div)`
 `;
 //슬라이더 열
 
-const Box = styled(motion.div)<{ bgPhoto: string }>`
+const Box = styled(motion.div)<{ bgphoto: string }>`
   background-color: white;
   height: 8rem;
   color: red;
   font-size: 20px;
-  background-image: url(${(props) => props.bgPhoto});
+  background-image: url(${(props) => props.bgphoto});
   background-size: cover;
   background-position: center center;
+  &:hover {
+    cursor: pointer;
+  }
+  &:first-child {
+    transform-origin: center left; //변화하는 기준점
+  }
+  &:last-child {
+    transform-origin: center right;
+  }
 `;
 //슬라이더 내용
+
+const boxVar = {
+  normal: {
+    scale: 1,
+  },
+  hover: {
+    y: -30,
+    scale: 1.4,
+    transition: {
+      delay: 0.5,
+      type: "tween",
+    },
+  },
+};
 
 const offset = 5; //Box에 담는 영화개수(자르는 개수)
 
@@ -114,7 +137,7 @@ function Home() {
         <>
           <Banner
             onClick={increaseIndex}
-            bgPhoto={makeImagePath(data?.results[0].backdrop_path || "")}
+            bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
           >
             <Title>{data?.results[0].title}</Title>
             <Overview>{data?.results[0].overview}</Overview>
@@ -135,7 +158,11 @@ function Home() {
                   .map((movie) => (
                     <Box
                       key={movie.id}
-                      bgPhoto={makeImagePath(movie.backdrop_path, "w500")}
+                      bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                      variants={boxVar}
+                      whileHover="hover"
+                      initial="normal"
+                      transition={{ type: "tween" }}
                     ></Box>
                   ))}
               </Row>
