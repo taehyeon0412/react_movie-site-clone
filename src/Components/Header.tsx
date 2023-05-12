@@ -5,8 +5,9 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { Link, useRouteMatch } from "react-router-dom";
+import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
   display: flex;
@@ -80,7 +81,7 @@ const Item = styled.li<ItemProps>`
   }
 `;
 
-const Search = styled.span`
+const Search = styled.form`
   color: white;
   display: flex;
   align-items: center;
@@ -102,7 +103,16 @@ const Input = styled(motion.input)`
   color: white;
   background-color: transparent;
   border: 1px solid ${(props) => props.theme.white.lighter};
+  outline: none;
+  ::placeholder {
+    color: ${(props) => props.theme.white.lighter};
+  }
 `;
+
+interface IForm {
+  keyword: string;
+}
+//form 인터페이스
 
 const logoVar = {
   normal: {
@@ -138,6 +148,15 @@ function Header() {
     //console.log(latest);
   }); //스크롤할때 값을 읽어서내서 알려줌
 
+  //검색바 시작
+  const history = useHistory();
+  const { register, handleSubmit } = useForm<IForm>();
+  const onValid = (data: IForm) => {
+    history.push(`/search?keyword=${data.keyword}`);
+  };
+
+  //검색바 끝
+
   return (
     <Nav variants={navVar} initial="top" animate={navAnimation}>
       <Column>
@@ -169,7 +188,7 @@ function Header() {
       {/* 첫번째 컬럼 : 헤더 메뉴 */}
 
       <Column>
-        <Search>
+        <Search onSubmit={handleSubmit(onValid)}>
           <motion.svg
             onClick={toggleSearch}
             animate={{ x: searchOpen ? `-14.5rem` : 0 }}
@@ -185,6 +204,7 @@ function Header() {
             ></path>
           </motion.svg>
           <Input
+            {...register("keyword", { required: true, minLength: 2 })}
             initial={false}
             transition={{ type: "linear" }}
             animate={{ scaleX: searchOpen ? 1 : 0 }}

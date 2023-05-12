@@ -116,8 +116,8 @@ const Overlay = styled(motion.div)`
 
 const MovieModal = styled(motion.div)`
   position: fixed;
-  width: 40vw;
-  height: 70vh;
+  width: 35rem;
+  height: 40rem;
   top: 0;
   bottom: 0;
   left: 0;
@@ -141,7 +141,6 @@ const ModalCoverImg = styled.div<{ bgphoto: string }>`
     ),
     linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
     url(${(props) => props.bgphoto});
-  background-size: cover;
 `;
 //박스 클릭 모달창 이미지
 
@@ -180,6 +179,7 @@ const ModalOverview = styled.p`
   padding: 20px 20px 0px 20px;
   font-weight: 700;
 `;
+//박스 클릭 모달창 정보 영화설명
 
 const offset = 7; //Box에 담는 영화개수(자르는 개수)
 
@@ -217,11 +217,11 @@ function Home() {
   };
   //클릭하고 있는 박스의 영화ID찾기
   const onOverlayClick = () => history.push("/");
+
   const clickedMovie =
     bigMovieMatch?.params.movieID &&
     data?.results.find((movie) => movie.id === +bigMovieMatch.params.movieID);
   //(조건1)이 &&(참)이면 (조건2)을 만족하는 항목을 반환한다.
-  console.log(clickedMovie);
 
   return (
     <Wrapper>
@@ -274,8 +274,8 @@ function Home() {
                 <Overlay
                   onClick={onOverlayClick}
                   initial={{ opacity: 0 }}
-                  exit={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                 />
                 <MovieModal layoutId={bigMovieMatch.params.movieID}>
                   {clickedMovie && (
