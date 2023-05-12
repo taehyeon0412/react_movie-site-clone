@@ -62,7 +62,7 @@ const Slider = styled.div`
 
 const Row = styled(motion.div)`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 5px;
   position: absolute;
   width: 100%;
@@ -71,12 +71,12 @@ const Row = styled(motion.div)`
 
 const Box = styled(motion.div)<{ bgphoto: string }>`
   background-color: white;
-  height: 8rem;
-  color: red;
+  height: 14rem;
   font-size: 20px;
   background-image: url(${(props) => props.bgphoto});
   background-size: cover;
   background-position: center center;
+  border-radius: 20px;
 
   &:hover {
     cursor: pointer;
@@ -98,37 +98,12 @@ const boxVar = {
     y: -50,
     scale: 1.4,
     transition: {
-      delay: 0.8,
+      delay: 0.3,
       type: "tween",
     },
   },
 };
 //박스 애니메이션
-
-const MovieInfo = styled(motion.div)`
-  padding: 10px;
-  background-color: ${(props) => props.theme.black.lighter};
-  opacity: 0;
-  width: 100%;
-  h4 {
-    text-align: center;
-    color: white;
-    font-size: 0.8rem;
-    font-weight: 800;
-  }
-`;
-//박스 영화 hover 모달창
-
-const movieInfoVar = {
-  hover: {
-    opacity: 1,
-    transition: {
-      delay: 0.5,
-      type: "tween",
-    },
-  },
-};
-//박스 hover 모달창 애니메이션
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -136,24 +111,77 @@ const Overlay = styled(motion.div)`
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  opacity: 0;
 `;
 //모달창 오버레이
 
 const MovieModal = styled(motion.div)`
   position: fixed;
-  background-color: blue;
-  width: 60vw;
+  width: 40vw;
   height: 70vh;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
   margin: auto;
+  background-color: ${(props) => props.theme.black.lighter};
+  border-radius: 20px;
+  overflow: hidden;
 `;
 //박스 클릭 모달창
 
-const offset = 5; //Box에 담는 영화개수(자르는 개수)
+const ModalCoverImg = styled.div<{ bgphoto: string }>`
+  width: 100%;
+  height: 70%;
+  background-size: cover;
+  background-position: center center;
+  background-image: linear-gradient(
+      to left,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.4)
+    ),
+    linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
+    url(${(props) => props.bgphoto});
+  background-size: cover;
+`;
+//박스 클릭 모달창 이미지
+
+const ModalTitle = styled.h2`
+  color: ${(props) => props.theme.white.lighter};
+  font-size: 1.7rem;
+  position: relative;
+  top: -100px;
+  padding: 20px;
+  font-weight: 700;
+`;
+// 박스 클릭 모달창 타이틀
+
+const ModalInfo = styled.p`
+  color: ${(props) => props.theme.white.lighter};
+  font-weight: 700;
+  position: relative;
+  top: -100px;
+  padding-left: 10px;
+  display: flex;
+  gap: 10px;
+`;
+// 박스 클릭 모달창 정보
+
+const ModalInfoStar = styled.span``;
+// 박스 클릭 모달창 정보 별
+
+const ModalInfoDate = styled.span``;
+// 박스 클릭 모달창 정보 개봉일
+
+const ModalOverview = styled.p`
+  bottom: 0;
+  position: absolute;
+  height: 30%;
+  width: 100%;
+  padding: 20px 20px 0px 20px;
+  font-weight: 700;
+`;
+
+const offset = 7; //Box에 담는 영화개수(자르는 개수)
 
 function Home() {
   const width = useWindowDimensions(); //window width 추적
@@ -189,6 +217,11 @@ function Home() {
   };
   //클릭하고 있는 박스의 영화ID찾기
   const onOverlayClick = () => history.push("/");
+  const clickedMovie =
+    bigMovieMatch?.params.movieID &&
+    data?.results.find((movie) => movie.id === +bigMovieMatch.params.movieID);
+  //(조건1)이 &&(참)이면 (조건2)을 만족하는 항목을 반환한다.
+  console.log(clickedMovie);
 
   return (
     <Wrapper>
@@ -208,9 +241,9 @@ function Home() {
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
               <Row
-                initial={{ x: width }}
+                initial={{ x: width + 5 }}
                 animate={{ x: 0 }}
-                exit={{ x: -width }}
+                exit={{ x: -width - 5 }}
                 transition={{ type: "tween", duration: 1 }}
                 key={index}
               >
@@ -221,18 +254,14 @@ function Home() {
                     <Box
                       layoutId={movie.id + ""}
                       key={movie.id}
-                      bgphoto={makeImagePath(movie.backdrop_path, "w500")}
+                      bgphoto={makeImagePath(movie.poster_path, "w500")}
                       variants={boxVar}
                       whileHover="hover"
                       initial="normal"
                       transition={{ type: "tween" }}
                       onClick={() => onBoxClicked(movie.id)}
                       //박스를 클릭하면 onBoxClicked호출 movie.id를 보냄
-                    >
-                      <MovieInfo variants={movieInfoVar}>
-                        <h4>{movie.title}</h4>
-                      </MovieInfo>
-                    </Box>
+                    ></Box>
                   ))}
               </Row>
             </AnimatePresence>
@@ -244,10 +273,33 @@ function Home() {
               <>
                 <Overlay
                   onClick={onOverlayClick}
+                  initial={{ opacity: 0 }}
                   exit={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                 />
-                <MovieModal layoutId={bigMovieMatch.params.movieID} />
+                <MovieModal layoutId={bigMovieMatch.params.movieID}>
+                  {clickedMovie && (
+                    <>
+                      <ModalCoverImg
+                        bgphoto={makeImagePath(clickedMovie.backdrop_path)}
+                      />
+                      <ModalTitle>{clickedMovie.title}</ModalTitle>
+                      <ModalInfo>
+                        <ModalInfoStar>
+                          💗{clickedMovie.vote_average}
+                        </ModalInfoStar>
+                        <ModalInfoDate>
+                          •{clickedMovie.release_date.slice(0, 4)}
+                        </ModalInfoDate>
+                      </ModalInfo>
+                      <ModalOverview>
+                        {clickedMovie.overview.length > 200
+                          ? `${clickedMovie.overview.slice(0, 200)}...`
+                          : `${clickedMovie.overview}`}
+                      </ModalOverview>
+                    </>
+                  )}
+                </MovieModal>
               </>
             ) : null}
           </AnimatePresence>

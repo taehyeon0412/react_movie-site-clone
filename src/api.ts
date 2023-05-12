@@ -7,6 +7,8 @@ interface IMovie {
   poster_path: string;
   title: string;
   overview: string;
+  release_date: string;
+  vote_average: number;
 }
 //영화 상세정보 인터페이스
 
