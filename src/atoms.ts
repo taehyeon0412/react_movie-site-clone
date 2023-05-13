@@ -6,6 +6,7 @@ export const windowWidth = atom({
   default: window.innerWidth,
 });
 
+//배너 사이즈 검색 할 사이즈
 export const BannerSize = selector({
   key: "bannerSize",
   get: ({ get }) => {

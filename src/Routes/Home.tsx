@@ -1,16 +1,21 @@
 import { useQuery } from "react-query";
-import { IGetMoviesResult, getMovies } from "../api";
+import {
+  IGetMoviesResult,
+  LIST_TYPE,
+  getMovies,
+  popularMovies,
+  popularTvShow,
+  upComingMovies,
+} from "../api";
 import styled from "styled-components";
 import { makeImagePath } from "../utils";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
-import useWindowDimensions from "../useWindow";
 import Banner from "../Components/Banner";
+import Slider from "../Components/Slider";
 
 const Wrapper = styled.div`
   background: black;
-  padding-bottom: 10rem;
 `;
 //전체화면
 
@@ -21,57 +26,6 @@ const Loader = styled.div`
   align-items: center;
 `;
 //로딩
-
-const Slider = styled.div`
-  position: relative;
-  top: -10rem;
-`;
-//전체 슬라이더
-
-const Row = styled(motion.div)`
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 5px;
-  position: absolute;
-  width: 100%;
-`;
-//슬라이더 열
-
-const Box = styled(motion.div)<{ bgphoto: string }>`
-  background-color: white;
-  height: 14rem;
-  font-size: 20px;
-  background-image: url(${(props) => props.bgphoto});
-  background-size: cover;
-  background-position: center center;
-  border-radius: 20px;
-
-  &:hover {
-    cursor: pointer;
-  }
-  &:first-child {
-    transform-origin: center left; //변화하는 기준점
-  }
-  &:last-child {
-    transform-origin: center right;
-  }
-`;
-//슬라이더 내용
-
-const boxVar = {
-  normal: {
-    scale: 1,
-  },
-  hover: {
-    y: -50,
-    scale: 1.4,
-    transition: {
-      delay: 0.3,
-      type: "tween",
-    },
-  },
-};
-//박스 애니메이션
 
 const Overlay = styled(motion.div)`
   position: fixed;
@@ -149,18 +103,26 @@ const ModalOverview = styled.p`
 `;
 //박스 클릭 모달창 정보 영화설명
 
-const offset = 7; //Box에 담는 영화개수(자르는 개수)
-
 function Home() {
-  const width = useWindowDimensions(); //window width 추적
-  const { data, isLoading } = useQuery<IGetMoviesResult>(
-    ["movies", "nowPlaying"],
+  const { data: nowPlayingMovie, isLoading } = useQuery<IGetMoviesResult>(
+    [LIST_TYPE[0], "nowPlaying"],
     getMovies //fetch한 API
   );
-  //console.log(data, isLoading);
 
-  const [index, setIndex] = useState(0); //슬라이더 인덱스
-  const [leaving, setLeaving] = useState(false); //슬라이더 상태
+  const { data: popularMovie } = useQuery<IGetMoviesResult>(
+    [LIST_TYPE[1], "popularMovie"],
+    popularMovies
+  );
+
+  const { data: upComingMovie } = useQuery<IGetMoviesResult>(
+    [LIST_TYPE[2], "upComingMovie"],
+    upComingMovies
+  );
+
+  const { data: popularTvShows } = useQuery<IGetMoviesResult>(
+    [LIST_TYPE[3], "popularTvShows"],
+    popularTvShow
+  );
 
   /* const increaseIndex = () => {
     if (data) {
@@ -174,21 +136,16 @@ function Home() {
     }
   }; */
 
-  const toggleLeaving = () => setLeaving((prev) => !prev);
-  //onExitComplete 에 넣어서 exit의 애니메이션이 끝나고 나서 함수가 실행되게함
-
   const bigMovieMatch = useRouteMatch<{ movieID: string }>("/movies/:movieID");
   const history = useHistory(); //useHistory훅은 url를 왔다갔다 할 수 있음
-  const onBoxClicked = (movieID: number) => {
-    // console.log(movieID);
-    history.push(`/movies/${movieID}`);
-  };
-  //클릭하고 있는 박스의 영화ID찾기
+
   const onOverlayClick = () => history.push("/");
 
   const clickedMovie =
     bigMovieMatch?.params.movieID &&
-    data?.results.find((movie) => movie.id === +bigMovieMatch.params.movieID);
+    nowPlayingMovie?.results.find(
+      (movie) => movie.id === +bigMovieMatch.params.movieID
+    );
   //(조건1)이 &&(참)이면 (조건2)을 만족하는 항목을 반환한다.
 
   return (
@@ -199,35 +156,29 @@ function Home() {
         <>
           <Banner></Banner>
 
-          <Slider>
-            <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
-              <Row
-                initial={{ x: width + 5 }}
-                animate={{ x: 0 }}
-                exit={{ x: -width - 5 }}
-                transition={{ type: "tween", duration: 1 }}
-                key={index}
-              >
-                {data?.results
-                  .slice(1) //배너에 있는 영화를 제외해야되니까 먼저 첫번째 영화를 슬라이스해줌
-                  .slice(offset * index, offset * index + offset) //5*0,5*0+5 =>0~5번째까지
-                  .map((movie) => (
-                    <Box
-                      layoutId={movie.id + ""}
-                      key={movie.id}
-                      bgphoto={makeImagePath(movie.poster_path, "w500")}
-                      variants={boxVar}
-                      whileHover="hover"
-                      initial="normal"
-                      transition={{ type: "tween" }}
-                      onClick={() => onBoxClicked(movie.id)}
-                      //박스를 클릭하면 onBoxClicked호출 movie.id를 보냄
-                    ></Box>
-                  ))}
-              </Row>
-            </AnimatePresence>
-          </Slider>
-          {/* 슬라이더 */}
+          <Slider
+            data={nowPlayingMovie as IGetMoviesResult}
+            title={"현재 상영 영화"}
+            listType={LIST_TYPE[0]}
+          ></Slider>
+
+          <Slider
+            data={popularMovie as IGetMoviesResult}
+            title={"인기 영화"}
+            listType={LIST_TYPE[1]}
+          ></Slider>
+
+          <Slider
+            data={upComingMovie as IGetMoviesResult}
+            title={"개봉 예정 영화"}
+            listType={LIST_TYPE[1]}
+          ></Slider>
+
+          <Slider
+            data={popularTvShows as IGetMoviesResult}
+            title={"Top Tv 드라마"}
+            listType={LIST_TYPE[1]}
+          ></Slider>
 
           <AnimatePresence>
             {bigMovieMatch ? (

@@ -1,6 +1,13 @@
 const API_KEY = "8fb9a6933b05a0378bc2109608540342";
 const BASE_PATH = "https://api.themoviedb.org/3";
 
+export const LIST_TYPE = [
+  "nowPlaying",
+  "popularMovies",
+  "upcomingMovies",
+  "popularTvShow",
+]; // 영상 종류
+
 interface IMovie {
   id: number;
   backdrop_path: string;
@@ -30,4 +37,25 @@ export function getMovies() {
     `${BASE_PATH}/movie/now_playing?language=ko&region=kr&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
-//영화 API 정보 가져오기
+//now_playing
+
+export function popularMovies() {
+  return fetch(
+    `${BASE_PATH}/movie/popular?language=ko&region=kr&api_key=${API_KEY}`
+  ).then((response) => response.json());
+}
+//popular
+
+export function upComingMovies() {
+  return fetch(
+    `${BASE_PATH}/movie/upcoming?language=ko&region=kr&api_key=${API_KEY}`
+  ).then((response) => response.json());
+}
+//upcoming
+
+export function popularTvShow() {
+  return fetch(`${BASE_PATH}/tv/top_rated?language=ko&api_key=${API_KEY}`).then(
+    (response) => response.json()
+  );
+}
+//popularTvShow

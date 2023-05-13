@@ -9,7 +9,8 @@ const Wrapper = styled.div<{ bgphoto: string }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100vh;
+  height: 80vh;
+  min-height: 50rem;
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -29,16 +30,20 @@ const Wrapper = styled.div<{ bgphoto: string }>`
 const Title = styled.h2`
   font-size: 3.5rem;
   margin-bottom: 15px;
+  font-weight: 700;
+
   @media only screen and (max-width: 1200px) {
     font-size: 3.2rem;
   }
   @media only screen and (max-width: 700px) {
     font-size: 2.6rem;
   }
-  @media only screen and (max-width: 500px) {
-    font-size: 2rem;
+  @media only screen and (max-width: 540px) {
+    font-size: 1.5rem;
+    width: 100%;
   }
-  @media only screen and (max-width: 350px) {
+  @media only screen and (max-width: 360px) {
+    font-size: 1.5rem;
     margin: 0;
   }
 `;
@@ -59,14 +64,15 @@ const Overview = styled.p`
     width: 60%;
   }
   @media only screen and (max-width: 700px) {
-    font-size: 0.8rem;
+    font-size: 1rem;
     width: 90%;
   }
   @media only screen and (max-width: 500px) {
-    width: 26rem;
+    font-size: 1rem;
+    width: 100%;
   }
 
-  @media only screen and (max-width: 350px) {
+  @media only screen and (max-width: 360px) {
     opacity: 0;
   }
 `;
