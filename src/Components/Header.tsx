@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 const Nav = styled(motion.nav)`
+  z-index: 99;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -101,7 +102,7 @@ const Input = styled(motion.input)`
   font-size: 1rem;
   z-index: -1;
   color: white;
-  background-color: transparent;
+  background-color: ${(props) => props.theme.black.lighter};
   border: 1px solid ${(props) => props.theme.white.lighter};
   outline: none;
   ::placeholder {

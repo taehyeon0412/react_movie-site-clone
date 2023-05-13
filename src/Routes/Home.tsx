@@ -6,12 +6,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import useWindowDimensions from "../useWindow";
+import Banner from "../Components/Banner";
 
 const Wrapper = styled.div`
-  background-color: black;
-  overflow-x: hidden;
+  background: black;
   padding-bottom: 10rem;
-  user-select: none;
 `;
 //전체화면
 
@@ -22,37 +21,6 @@ const Loader = styled.div`
   align-items: center;
 `;
 //로딩
-
-const Banner = styled.div<{ bgphoto: string }>`
-  height: 100vh;
-  background-color: black;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 60px;
-  background-image: linear-gradient(
-      to left,
-      rgba(0, 0, 0, 0),
-      rgba(0, 0, 0, 0.6)
-    ),
-    linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
-    url(${(props) => props.bgphoto});
-  background-size: cover;
-`;
-//배너
-
-const Title = styled.h2`
-  font-size: 3.5rem;
-  margin-bottom: 15px;
-`;
-//영화제목
-
-const Overview = styled.p`
-  font-size: 1rem;
-  width: 55%;
-  padding-left: 10px;
-`;
-//영화설명
 
 const Slider = styled.div`
   position: relative;
@@ -194,17 +162,17 @@ function Home() {
   const [index, setIndex] = useState(0); //슬라이더 인덱스
   const [leaving, setLeaving] = useState(false); //슬라이더 상태
 
-  const increaseIndex = () => {
+  /* const increaseIndex = () => {
     if (data) {
       if (leaving) return;
-      /* leaving이 true이면 리턴(아무것도 하지않음) 클릭을 여러번 연속으로 하면 
-        간격이 벌어지는 버그 수정하기 위해 인덱스 증가 안되게함*/
+      // leaving이 true이면 리턴(아무것도 하지않음) 클릭을 여러번 연속으로 하면
+      // 간격이 벌어지는 버그 수정하기 위해 인덱스 증가 안되게함
       toggleLeaving();
       const totalMovies = data.results.length - 1; //총 영화 개수 - 배너영화
       const maxIndex = Math.ceil(totalMovies / offset) - 1; //올림=> 나눗셈이 4.2개 이면 올림해서 5개로만들어서 새로운 공간을 만듦
       setIndex((prev) => (prev === maxIndex ? 0 : prev + 1)); //maxIndex가 아니면 인덱스 1만큼 증가
     }
-  };
+  }; */
 
   const toggleLeaving = () => setLeaving((prev) => !prev);
   //onExitComplete 에 넣어서 exit의 애니메이션이 끝나고 나서 함수가 실행되게함
@@ -229,14 +197,7 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner
-            onClick={increaseIndex}
-            bgphoto={makeImagePath(data?.results[0].backdrop_path || "")}
-          >
-            <Title>{data?.results[0].title}</Title>
-            <Overview>{data?.results[0].overview}</Overview>
-          </Banner>
-          {/* 배너 */}
+          <Banner></Banner>
 
           <Slider>
             <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
