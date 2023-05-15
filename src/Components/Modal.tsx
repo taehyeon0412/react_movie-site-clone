@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import styled, { createGlobalStyle } from "styled-components";
-import { IGetMoviesResult, IMovie, detailData } from "../api";
+import { IGenre, IGetMoviesResult, IMovie, detailData } from "../api";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { makeImagePath } from "../utils";
 import { useQuery } from "react-query";
+import ReactStars from "react-stars";
 
 const GlobalStyle = createGlobalStyle`
   html{overflow: hidden;}
@@ -102,34 +103,57 @@ const ModalInfoBox = styled.div`
   float: right;
   width: 70%;
   height: 40%;
-  padding-left: 2rem;
+  padding-left: 1.5rem;
+  margin-top: 0.5rem;
 `;
 //모달창 정보 박스
 
-const ModalInfo = styled.p`
-  color: ${(props) => props.theme.white.lighter};
-  font-weight: 700;
+const ModalInfoItem = styled.span`
   position: relative;
-  top: -100px;
-  padding-left: 10px;
-  display: flex;
-  gap: 10px;
-`;
-// 박스 클릭 모달창 정보
-
-const ModalInfoStar = styled.span``;
-// 박스 클릭 모달창 정보 별
-
-const ModalInfoDate = styled.span``;
-// 박스 클릭 모달창 정보 개봉일
-
-const ModalOverview = styled.p`
-  bottom: 0;
-  position: absolute;
-  height: 30%;
-  width: 100%;
-  padding: 20px 20px 0px 20px;
+  margin-left: 0.5rem;
+  padding-left: 0.7rem;
+  font-size: 0.9rem;
   font-weight: 700;
+
+  ::before {
+    content: "";
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 0.25rem;
+    height: 0.25rem;
+    border-radius: 50%;
+    background-color: #7e7e7e;
+  }
+`;
+//모달창 정보 아이템
+
+const ModalInfoRating = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  .rating {
+    overflow: hidden;
+    margin: 0;
+  }
+  span {
+    top: -3px;
+    color: #f1ef5b;
+    font-weight: 700;
+  }
+`;
+//모달창 별점
+
+const ModalOverview = styled.div`
+  margin-left: 0.5rem;
+  width: 95%;
+  font-size: 0.9rem;
+  line-height: 1.3rem;
+  padding-bottom: 3rem;
 `;
 //박스 클릭 모달창 정보 영화설명
 
@@ -163,6 +187,18 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
     }
   };
 
+  const getGenreToString = (arr: IGenre[]): string => {
+    if (arr && arr.length > 0) {
+      return (
+        arr.map((genre, idx) => {
+          return idx + 1 === arr.length ? `${genre.name}` : `${genre.name}`;
+        }) + ""
+      );
+    }
+    return "";
+  };
+  //장르는 [] 배열이므로 거기에 있는것들을 map으로 풀어야된다
+
   return (
     <>
       <GlobalStyle />
@@ -187,7 +223,35 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
             />
           </ModalSmallImg>
 
-          <ModalInfoBox></ModalInfoBox>
+          <ModalInfoBox>
+            <>
+              <ModalInfoItem>{data?.release_date.slice(0, 4)}</ModalInfoItem>
+
+              <ModalInfoItem>
+                {data?.runtime ? `${data?.runtime}분` : ""}
+              </ModalInfoItem>
+
+              <ModalInfoItem>
+                {getGenreToString(data?.genres || [])}
+              </ModalInfoItem>
+
+              <ModalInfoRating>
+                <ReactStars
+                  count={5}
+                  value={data?.vote_average ? data?.vote_average / 2 : 0}
+                  color1="#E6E6E6"
+                  color2="#FFCC33"
+                  half
+                  size={20}
+                  edit={false}
+                  className="rating"
+                />
+                <span>({data?.vote_average.toFixed(1)}점)</span>
+              </ModalInfoRating>
+
+              <ModalOverview>{data?.overview}</ModalOverview>
+            </>
+          </ModalInfoBox>
         </>
       </MovieModalBox>
     </>
@@ -196,38 +260,11 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
 
 export default Modal;
 
-/* <AnimatePresence>
-            {bigMovieMatch ? (
-              <>
-                <Overlay
-                  onClick={onOverlayClick}
-                  initial={{ opacity: 0 }}
-                  exit={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                />
-                <MovieModal layoutId={bigMovieMatch.params.movieID}>
-                  {clickedMovie && (
-                    <>
-                      <ModalCoverImg
-                        bgphoto={makeImagePath(clickedMovie.backdrop_path)}
-                      />
-                      <ModalTitle>{clickedMovie.title}</ModalTitle>
-                      <ModalInfo>
-                        <ModalInfoStar>
-                          💗{clickedMovie.vote_average}
-                        </ModalInfoStar>
-                        <ModalInfoDate>
-                          •{clickedMovie.release_date.slice(0, 4)}
-                        </ModalInfoDate>
-                      </ModalInfo>
-                      <ModalOverview>
-                        {clickedMovie.overview.length > 200
-                          ? `${clickedMovie.overview.slice(0, 200)}...`
-                          : `${clickedMovie.overview}`}
-                      </ModalOverview>
-                    </>
-                  )}
-                </MovieModal>
-              </>
-            ) : null}
-          </AnimatePresence> */
+/* content: "";
+    position: absolute;
+    width: 0.3rem;
+    height: 1.2rem;
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgb(204, 204, 204); */
