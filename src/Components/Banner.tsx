@@ -102,3 +102,9 @@ function Banner() {
 }
 
 export default Banner;
+
+/* 'string | undefined' 형식의 인수는 'string' 형식의 매개 변수에 할당될 수 없습니다.
+  'undefined' 형식은 'string' 형식에 할당할 수 없습니다. 
+  ==> 타입스크립트 오류일때 
+  ===>어떠한 이유에서 data가 존재하지 않아 backdrop_path가 제공되지 않으면
+  || "" 빈string을 보내라고 하면 해결된다*/

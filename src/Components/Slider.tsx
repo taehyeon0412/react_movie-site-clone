@@ -4,7 +4,8 @@ import { IGetMoviesResult } from "./../api";
 import { useEffect, useState } from "react";
 import useWindowDimensions from "../useWindow";
 import { makeImagePath } from "../utils";
-import { useHistory } from "react-router-dom";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import Modal from "./Modal";
 
 const Wrapper = styled(motion.div)`
   position: relative;
@@ -105,9 +106,11 @@ interface ISlider {
   data: IGetMoviesResult;
   title: string;
   listType: string;
+  mediaType: string;
+  menuName: string;
 }
 
-function Slider({ data, title }: ISlider) {
+function Slider({ data, title, listType, mediaType, menuName }: ISlider) {
   const width = useWindowDimensions(); //window width 추적
   const [index, setIndex] = useState(0); //슬라이더 인덱스
   const [leaving, setLeaving] = useState(false); //슬라이더 상태
@@ -117,11 +120,20 @@ function Slider({ data, title }: ISlider) {
   //onExitComplete 에 넣어서 exit의 애니메이션이 끝나고 나서 함수가 실행되게함
 
   const history = useHistory(); //useHistory훅은 url를 왔다갔다 할 수 있음
-  const onBoxClicked = (movieID: number) => {
+  const onBoxClicked = (
+    movieID: number,
+    listType: string,
+    menuName: string
+  ) => {
     // console.log(movieID);
-    history.push(`/movies/${movieID}`);
+    history.push(`/${menuName}/${listType}/${movieID}`);
   };
-  //클릭하고 있는 박스의 영화ID찾기
+  //클릭하고 있는 박스의 영화ID,listType를 주소창에 push 해주는것
+
+  const modalMatch = useRouteMatch<{ movieID: string }>(
+    `/${menuName}/${listType}/:movieID`
+  );
+  //클릭하고 있는 영화 모달 매치
 
   useEffect(() => {
     if (width > 1530) {
@@ -143,6 +155,7 @@ function Slider({ data, title }: ISlider) {
     }
   });
   //윈도우 크기별 offset(보이는 영화개수)
+  //recoil로 해도 되지만 useEffect로 하는 방법도 있다는것을 학습하기위해
 
   return (
     <Wrapper>
@@ -159,20 +172,33 @@ function Slider({ data, title }: ISlider) {
             .slice(offset * index, offset * index + offset)
             .map((movie) => (
               <Box
-                layoutId={movie.id + ""}
+                layoutId={movie.id + "" + listType}
                 key={movie.id}
-                bgphoto={makeImagePath(movie.poster_path, "w500")}
+                bgphoto={makeImagePath(movie?.poster_path || "", "w500")}
                 variants={boxVar}
                 whileHover="hover"
                 initial="normal"
                 transition={{ type: "tween" }}
-                onClick={() => onBoxClicked(movie.id)}
+                onClick={() => onBoxClicked(movie.id, listType, menuName)}
               ></Box>
             ))}
         </Row>
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {modalMatch ? (
+          <Modal
+            dataId={Number(modalMatch?.params.movieID)} //모달에 정보 보냄
+            listType={listType}
+            requestUrl={mediaType}
+            menuName={menuName}
+          />
+        ) : null}
       </AnimatePresence>
     </Wrapper>
   );
 }
 
 export default Slider;
+
+/* onExitComplete => 여기에 함수를 넣으면 exit가 끝났을때 함수가 실행됨*/
