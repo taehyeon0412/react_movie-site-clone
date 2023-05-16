@@ -225,15 +225,26 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
 
           <ModalInfoBox>
             <>
-              <ModalInfoItem>{data?.release_date.slice(0, 4)}</ModalInfoItem>
+              <ModalInfoItem>
+                {data?.release_date
+                  ? data?.release_date.slice(0, 4)
+                  : "정보없음"}
+              </ModalInfoItem>
+              {/* 개봉일 */}
 
               <ModalInfoItem>
-                {data?.runtime ? `${data?.runtime}분` : ""}
+                {data?.runtime ? `${data?.runtime}분` : "정보없음"}
               </ModalInfoItem>
+              {/* 런타임 */}
 
               <ModalInfoItem>
-                {getGenreToString(data?.genres || [])}
+                {getGenreToString(data?.genres || [])
+                  ? getGenreToString(data?.genres || []).length > 15
+                    ? getGenreToString(data?.genres || []).slice(0, 15) + " ..."
+                    : getGenreToString(data?.genres || [])
+                  : null}
               </ModalInfoItem>
+              {/* 장르 */}
 
               <ModalInfoRating>
                 <ReactStars
@@ -248,8 +259,10 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
                 />
                 <span>({data?.vote_average.toFixed(1)}점)</span>
               </ModalInfoRating>
+              {/* 별 rating */}
 
               <ModalOverview>{data?.overview}</ModalOverview>
+              {/* 줄거리 */}
             </>
           </ModalInfoBox>
         </>
@@ -259,12 +272,3 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
 }
 
 export default Modal;
-
-/* content: "";
-    position: absolute;
-    width: 0.3rem;
-    height: 1.2rem;
-    left: 0px;
-    top: 50%;
-    transform: translateY(-50%);
-    background-color: rgb(204, 204, 204); */
