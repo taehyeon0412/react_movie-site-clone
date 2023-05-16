@@ -1,9 +1,13 @@
 import styled from "styled-components";
-import { IGetMoviesResult, getMovies } from "../api";
+import { IGetMoviesResult, IMovie, getMovies, popularMovies } from "../api";
 import { makeImagePath } from "../utils";
 import { useQuery } from "react-query";
 import { BannerSize } from "../atoms";
 import { useRecoilValue } from "recoil";
+import ReactStars from "react-stars";
+import { useHistory, useRouteMatch } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import Modal from "./Modal";
 
 const Wrapper = styled.div<{ bgphoto: string }>`
   display: flex;
@@ -78,24 +82,123 @@ const Overview = styled.p`
 `;
 //영화설명
 
-function Banner() {
-  const { data } = useQuery<IGetMoviesResult>(
-    ["movies", "nowPlaying"],
-    getMovies //fetch한 API
-  ); //api에서 데이터를 불러옴
+const InfoRating = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+
+  .rating {
+    overflow: hidden;
+    margin: 0;
+  }
+  span {
+    top: -3px;
+    color: ${(props) => props.theme.white.darker};
+    font-weight: 700;
+  }
+`;
+// 별점
+
+const InfoBtn = styled.button`
+  position: absolute;
+  top: 3rem;
+  left: 0;
+  width: 10rem;
+  height: 150%;
+  background-color: ${(props) => props.theme.black.lighter};
+
+  span {
+    color: white;
+    font-weight: 700;
+  }
+
+  &:hover {
+    background-color: ${(props) => props.theme.black.darker};
+    cursor: pointer;
+
+    span {
+      color: ${(props) => props.theme.white.darker};
+    }
+  }
+`;
+//버튼
+
+function Banner({
+  detailSearchUrl,
+  requestUrl,
+  bannerInfo,
+  menuName,
+}: {
+  bannerInfo: IMovie;
+  detailSearchUrl: string;
+  requestUrl: string;
+  menuName: string;
+}) {
+  /* const { data } = useQuery<IGetMoviesResult>(
+    ["movies", "popularMovie"],
+    popularMovies //fetch한 API
+  ); //api에서 데이터를 불러옴 */
 
   const bannerBgSize = useRecoilValue(BannerSize);
+  //banner 사이즈
+
+  const history = useHistory();
+  const onBoxClicked = (id: number) => {
+    history.push(`/${detailSearchUrl}/${id}`);
+  };
+  //상세정보 클릭하면 주소에 push해준다
+
+  const modalMatch = useRouteMatch<{ movieID: string }>(
+    `/${detailSearchUrl}/:movieID`
+  );
+  //클릭하고 있는 영화 모달 매치
 
   return (
     <Wrapper
-      bgphoto={makeImagePath(
-        data?.results[0].backdrop_path || "",
-        bannerBgSize
-      )}
+      bgphoto={makeImagePath(bannerInfo?.backdrop_path || "", bannerBgSize)}
     >
       <>
-        <Title>{data?.results[0].title}</Title>
-        <Overview>{data?.results[0].overview}</Overview>
+        <Title>{bannerInfo?.title}</Title>
+        <Overview>{bannerInfo?.overview}</Overview>
+        <InfoRating>
+          <ReactStars
+            count={5}
+            value={bannerInfo?.vote_average ? bannerInfo?.vote_average / 2 : 0}
+            color1="#E6E6E6"
+            color2="#00a7f6"
+            half
+            size={20}
+            edit={false}
+            className="rating"
+          />
+          <span>
+            {bannerInfo?.vote_average.toFixed(1)} (
+            {bannerInfo?.vote_count.toLocaleString()})
+          </span>
+          <InfoBtn
+            onClick={() => {
+              onBoxClicked(Number(bannerInfo?.id));
+            }}
+          >
+            <span>상세정보</span>
+          </InfoBtn>
+        </InfoRating>
+        {/* 별 rating + 버튼 */}
+
+        <AnimatePresence>
+          {modalMatch ? (
+            <Modal
+              dataId={Number(modalMatch?.params.movieID)} //모달에 정보 보냄
+              listType={"banner"}
+              mediaType={requestUrl}
+              menuName={menuName}
+            />
+          ) : null}
+        </AnimatePresence>
       </>
     </Wrapper>
   );

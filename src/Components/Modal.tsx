@@ -1,6 +1,13 @@
 import { motion } from "framer-motion";
 import styled, { createGlobalStyle } from "styled-components";
-import { IGenre, IGetMoviesResult, IMovie, detailData } from "../api";
+import {
+  IGenre,
+  IGetMoviesResult,
+  IMovie,
+  SmilerDataResults,
+  detailData,
+  similarData,
+} from "../api";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import { makeImagePath } from "../utils";
 import { useQuery } from "react-query";
@@ -16,7 +23,7 @@ const Overlay = styled(motion.div)`
   left: 0;
   width: 100%;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
   opacity: 0;
   z-index: 99;
 `;
@@ -35,6 +42,7 @@ const MovieModalBox = styled(motion.div)`
   border-radius: 20px;
   overflow: auto;
   z-index: 100;
+  user-select: none;
 
   ::-webkit-scrollbar {
     display: none;
@@ -58,6 +66,24 @@ const ModalCoverImg = styled.div<{ bgphoto: string }>`
   position: relative;
 `;
 //모달창 이미지
+
+const ModalCancelBtn = styled.button`
+  position: absolute;
+  width: 2rem;
+  height: 2rem;
+  background-color: transparent;
+  right: 0;
+  border: none;
+  margin: 0 auto;
+  z-index: 100;
+  cursor: pointer;
+  color: ${(props) => props.theme.white.lighter};
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+  }
+`;
 
 const ModalSmallImg = styled.div`
   width: 30%;
@@ -96,6 +122,10 @@ const ModalSmallTitle = styled.h3`
   font-weight: 600;
 `;
 //모달창 작은 타이틀
+
+const ModalInfoWrapper = styled.div`
+  height: 50%;
+`;
 
 const ModalInfoBox = styled.div`
   position: absolute;
@@ -142,7 +172,7 @@ const ModalInfoRating = styled.div`
   }
   span {
     top: -3px;
-    color: #f1ef5b;
+    color: ${(props) => props.theme.white.lighter};
     font-weight: 700;
   }
 `;
@@ -153,23 +183,59 @@ const ModalOverview = styled.div`
   width: 95%;
   font-size: 0.9rem;
   line-height: 1.3rem;
-  padding-bottom: 3rem;
+  max-height: 13rem;
+  overflow: auto;
+
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `;
 //박스 클릭 모달창 정보 영화설명
+
+const ModalSmilerSpan = styled.span`
+  font-size: 1rem;
+  font-weight: 700;
+  margin-left: 1rem;
+`;
+
+const ModalSmilerDiv = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20%, auto));
+  margin-top: 2rem;
+  width: 100%;
+  padding: 1rem;
+  gap: 10px;
+  margin: 0 auto;
+`;
+//비슷한 영화 div
+
+const ModalSmilerImg = styled.div<{ bgphoto: string }>`
+  height: 13rem;
+  background-image: url(${(props) => props.bgphoto});
+  background-size: cover;
+  background-position: center center;
+  border-radius: 20px;
+`;
+//비슷한 영화 이미지
 
 interface IModal {
   dataId: number;
   listType: string;
-  requestUrl: string;
+  mediaType: string;
   menuName: string;
 }
 
-export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
+export function Modal({ dataId, listType, mediaType, menuName }: IModal) {
   const { data } = useQuery<IMovie>(
     [listType + dataId, "detail" + dataId],
-    () => detailData(requestUrl, dataId)
+    () => detailData(mediaType, dataId)
   );
-  //api.ts에 있는 detailData()에 requestUrl,dataId 정보를 넣는다
+  //api.ts에 있는 detailData()에 mediaType,dataId 정보를 넣는다
+
+  const { data: smilerData } = useQuery<SmilerDataResults>(
+    [mediaType + dataId, "smiler" + dataId],
+    () => similarData(mediaType, dataId)
+  );
 
   const history = useHistory();
   const modalMatch = useRouteMatch<{ movieID: string }>(
@@ -202,6 +268,7 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
   return (
     <>
       <GlobalStyle />
+
       <Overlay
         onClick={overlayClicked}
         exit={{ opacity: 0 }}
@@ -210,11 +277,16 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
       <MovieModalBox layoutId={modalMatch?.params.movieID + listType}>
         <>
           <ModalCoverImg bgphoto={makeImagePath(data?.backdrop_path || "")}>
+            <ModalCancelBtn onClick={overlayClicked}>
+              <i className="fa-solid fa-circle-xmark"></i>
+            </ModalCancelBtn>
+
             <ModalTextBox>
               <ModalTitle>{data?.title}</ModalTitle>
               <ModalSmallTitle>{data?.original_title}</ModalSmallTitle>
             </ModalTextBox>
           </ModalCoverImg>
+          {/* 대형 이미지 */}
 
           <ModalSmallImg>
             <img
@@ -222,49 +294,70 @@ export function Modal({ dataId, listType, requestUrl, menuName }: IModal) {
               alt="poster"
             />
           </ModalSmallImg>
+          {/* 작은 이미지 */}
 
-          <ModalInfoBox>
-            <>
-              <ModalInfoItem>
-                {data?.release_date
-                  ? data?.release_date.slice(0, 4)
-                  : "정보없음"}
-              </ModalInfoItem>
-              {/* 개봉일 */}
+          <ModalInfoWrapper>
+            <ModalInfoBox>
+              <>
+                <ModalInfoItem>
+                  {data?.release_date
+                    ? data?.release_date.slice(0, 4)
+                    : "정보없음"}
+                </ModalInfoItem>
+                {/* 개봉일 */}
 
-              <ModalInfoItem>
-                {data?.runtime ? `${data?.runtime}분` : "정보없음"}
-              </ModalInfoItem>
-              {/* 런타임 */}
+                <ModalInfoItem>
+                  {data?.runtime ? `${data?.runtime}분` : "정보없음"}
+                </ModalInfoItem>
+                {/* 런타임 */}
 
-              <ModalInfoItem>
-                {getGenreToString(data?.genres || [])
-                  ? getGenreToString(data?.genres || []).length > 15
-                    ? getGenreToString(data?.genres || []).slice(0, 15) + " ..."
-                    : getGenreToString(data?.genres || [])
-                  : null}
-              </ModalInfoItem>
-              {/* 장르 */}
+                <ModalInfoItem>
+                  {getGenreToString(data?.genres || [])
+                    ? getGenreToString(data?.genres || []).length > 15
+                      ? getGenreToString(data?.genres || []).slice(0, 15) +
+                        " ..."
+                      : getGenreToString(data?.genres || [])
+                    : null}
+                </ModalInfoItem>
+                {/* 장르 */}
 
-              <ModalInfoRating>
-                <ReactStars
-                  count={5}
-                  value={data?.vote_average ? data?.vote_average / 2 : 0}
-                  color1="#E6E6E6"
-                  color2="#FFCC33"
-                  half
-                  size={20}
-                  edit={false}
-                  className="rating"
-                />
-                <span>({data?.vote_average.toFixed(1)}점)</span>
-              </ModalInfoRating>
-              {/* 별 rating */}
+                <ModalInfoRating>
+                  <ReactStars
+                    count={5}
+                    value={data?.vote_average ? data?.vote_average / 2 : 0}
+                    color1="#E6E6E6"
+                    color2="#00a7f6"
+                    half
+                    size={20}
+                    edit={false}
+                    className="rating"
+                  />
+                  <span>
+                    {data?.vote_average.toFixed(1)} (
+                    {data?.vote_count.toLocaleString()})
+                  </span>
+                </ModalInfoRating>
+                {/* 별 rating */}
 
-              <ModalOverview>{data?.overview}</ModalOverview>
-              {/* 줄거리 */}
-            </>
-          </ModalInfoBox>
+                <ModalOverview>{data?.overview}</ModalOverview>
+                {/* 줄거리 */}
+              </>
+            </ModalInfoBox>
+          </ModalInfoWrapper>
+
+          <ModalSmilerSpan>비슷한 콘텐츠</ModalSmilerSpan>
+          <ModalSmilerDiv>
+            {smilerData?.results.slice(0, 4).map((smiler) => (
+              <ModalSmilerImg
+                key={smiler.id}
+                bgphoto={
+                  makeImagePath(smiler.poster_path)
+                    ? makeImagePath(smiler.poster_path || "", "w500")
+                    : makeImagePath(smiler.backdrop_path || "", "w500")
+                }
+              ></ModalSmilerImg>
+            ))}
+          </ModalSmilerDiv>
         </>
       </MovieModalBox>
     </>

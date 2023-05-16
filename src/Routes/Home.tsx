@@ -1,6 +1,7 @@
 import { useQuery } from "react-query";
 import {
   IGetMoviesResult,
+  IMovie,
   LIST_TYPE,
   getMovies,
   popularMovies,
@@ -71,7 +72,12 @@ function Home() {
         <Loader>Loading...</Loader>
       ) : (
         <>
-          <Banner></Banner>
+          <Banner
+            bannerInfo={popularMovie?.results[0] as IMovie}
+            detailSearchUrl={`home/banner`}
+            requestUrl={"movie"}
+            menuName={"home"}
+          ></Banner>
 
           <Slider
             data={nowPlayingMovie as IGetMoviesResult}

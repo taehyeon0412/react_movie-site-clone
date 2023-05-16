@@ -9,7 +9,6 @@ import Modal from "./Modal";
 
 const Wrapper = styled(motion.div)`
   position: relative;
-
   overflow: hidden;
   min-height: 25rem;
 `;
@@ -20,6 +19,7 @@ const Title = styled.div`
   padding-left: 2rem;
   font-weight: 700;
   padding-bottom: 1rem;
+  user-select: none;
 
   @media only screen and (max-width: 1250px) {
     font-size: 1.8rem;
@@ -190,7 +190,7 @@ function Slider({ data, title, listType, mediaType, menuName }: ISlider) {
           <Modal
             dataId={Number(modalMatch?.params.movieID)} //모달에 정보 보냄
             listType={listType}
-            requestUrl={mediaType}
+            mediaType={mediaType}
             menuName={menuName}
           />
         ) : null}

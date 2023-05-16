@@ -2,11 +2,25 @@ const API_KEY = "8fb9a6933b05a0378bc2109608540342";
 const BASE_PATH = "https://api.themoviedb.org/3";
 
 export const LIST_TYPE = [
-  "nowPlaying",
-  "upcomingMovies",
-  "popularMovies",
-  "popularTvShow",
+  "nowPlaying", //0
+  "upcomingMovies", //1
+  "popularMovies", //2
+  "popularTvShow", //3
+  "banner", //4
 ]; // 영상 종류
+
+export interface SmilerData {
+  poster_path: string;
+  backdrop_path: string;
+  title: string;
+  id: number;
+}
+//비슷한영화 상세정보
+
+export interface SmilerDataResults {
+  results: SmilerData[];
+}
+//비슷한영화 정보
 
 export interface IGenre {
   id: number;
@@ -21,6 +35,7 @@ export interface IMovie {
   overview: string;
   release_date: string;
   vote_average: number;
+  vote_count: number;
   runtime: number;
   genres: IGenre[];
   original_title: string;
@@ -68,9 +83,16 @@ export function popularTvShow() {
 }
 //popularTvShow
 
-export function detailData(requestUrl: string, movieId: number) {
+export function similarData(mediaType: string, movieId: number) {
   return fetch(
-    `${BASE_PATH}/${requestUrl}/${movieId}?language=ko&region=kr&api_key=${API_KEY}`
+    `${BASE_PATH}/${mediaType}/${movieId}/similar?api_key=${API_KEY}&language=ko&page=1`
+  ).then((response) => response.json());
+}
+//비슷한 장르 영화,tv 추천
+
+export function detailData(mediaType: string, movieId: number) {
+  return fetch(
+    `${BASE_PATH}/${mediaType}/${movieId}?language=ko&region=kr&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
 
