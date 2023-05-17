@@ -5,9 +5,13 @@ export const LIST_TYPE = [
   "nowPlaying", //0
   "upcomingMovies", //1
   "popularMovies", //2
-  "popularTvShow", //3
-  "banner", //4
+  "topTvShow", //3
 ]; // 영상 종류
+
+export const TV_LIST_TYPE = [
+  "topTvShow", //0
+  "onTheAir", //1
+];
 
 export interface SmilerData {
   poster_path: string;
@@ -60,28 +64,35 @@ export function getMovies() {
     `${BASE_PATH}/movie/now_playing?language=ko&region=kr&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
-//now_playing
+//now_playing 영화
 
 export function popularMovies() {
   return fetch(
     `${BASE_PATH}/movie/popular?language=ko&region=kr&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
-//popular
+//popular 영화
 
 export function upComingMovies() {
   return fetch(
     `${BASE_PATH}/movie/upcoming?language=ko&region=kr&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
-//upcoming
+//upcoming 영화
 
-export function popularTvShow() {
+export function topTvShow() {
   return fetch(`${BASE_PATH}/tv/top_rated?language=ko&api_key=${API_KEY}`).then(
     (response) => response.json()
   );
 }
-//popularTvShow
+//topTvShow tv
+
+export function onTheAir() {
+  return fetch(
+    `${BASE_PATH}/tv/airing_today?language=ko&api_key=${API_KEY}`
+  ).then((response) => response.json());
+}
+//onTheAir tv
 
 export function similarData(mediaType: string, movieId: number) {
   return fetch(

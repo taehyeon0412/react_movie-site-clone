@@ -5,7 +5,7 @@ import {
   LIST_TYPE,
   getMovies,
   popularMovies,
-  popularTvShow,
+  topTvShow,
   upComingMovies,
 } from "../api";
 import styled from "styled-components";
@@ -42,9 +42,9 @@ function Home() {
     upComingMovies
   );
 
-  const { data: popularTvShows } = useQuery<IGetMoviesResult>(
+  const { data: topTvShows } = useQuery<IGetMoviesResult>(
     [LIST_TYPE[3], "popularTvShows"],
-    popularTvShow
+    topTvShow
   );
 
   /* const increaseIndex = () => {
@@ -104,8 +104,8 @@ function Home() {
           ></Slider>
 
           <Slider
-            data={popularTvShows as IGetMoviesResult}
-            title={"Top Tv 드라마"}
+            data={topTvShows as IGetMoviesResult}
+            title={"Top20 Tv 드라마"}
             listType={LIST_TYPE[3]}
             mediaType={"tv"}
             menuName={"home"}
