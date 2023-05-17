@@ -33,11 +33,43 @@ const Title = styled.div`
   }
 `;
 
+const ArrowBtn = styled(motion.div)`
+  position: absolute;
+  display: flex;
+  top: 40%;
+  background-color: rgba(0, 0, 0, 0.3);
+  opacity: 0;
+  z-index: 98;
+
+  i {
+    font-size: 3rem;
+  }
+
+  &:hover {
+    cursor: pointer;
+    scale: 1.1;
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+`;
+// 화살표버튼
+
+const ArrowBox_L = styled(ArrowBtn)`
+  left: 0;
+`;
+
+const ArrowBox_R = styled(ArrowBtn)`
+  right: 0;
+`;
+
 const Row = styled(motion.div)`
   display: grid;
   gap: 5px;
   position: absolute;
   width: 100%;
+
+  &:hover ${ArrowBtn} {
+    opacity: 1;
+  }
 
   @media only screen and (min-width: 1530px) {
     grid-template-columns: repeat(10, 1fr);
@@ -65,6 +97,24 @@ const Row = styled(motion.div)`
   }
 `;
 //슬라이더 열
+
+const rowVar = {
+  hidden: (right: number) => {
+    return {
+      x: right === 1 ? window.innerWidth + 5 : -window.innerWidth - 5,
+    };
+  },
+  visible: {
+    x: 0,
+    y: 0,
+  },
+  exit: (right: number) => {
+    return {
+      x: right === 1 ? -window.innerWidth - 5 : window.innerWidth + 5,
+    };
+  },
+};
+//Row 애니메이션
 
 const Box = styled(motion.div)<{ bgphoto: string }>`
   background-color: white;
@@ -113,6 +163,7 @@ interface ISlider {
 function Slider({ data, title, listType, mediaType, menuName }: ISlider) {
   const width = useWindowDimensions(); //window width 추적
   const [index, setIndex] = useState(0); //슬라이더 인덱스
+  const [isRight, setIsRight] = useState(1); // left: -1, right: 1
   const [leaving, setLeaving] = useState(false); //슬라이더 상태
   const [offset, setOffset] = useState(0);
 
@@ -157,17 +208,52 @@ function Slider({ data, title, listType, mediaType, menuName }: ISlider) {
   //윈도우 크기별 offset(보이는 영화개수)
   //recoil로 해도 되지만 useEffect로 하는 방법도 있다는것을 학습하기위해
 
+  const changeIndex = (right: number) => {
+    if (data) {
+      if (leaving) return;
+      // leaving이 true이면 리턴(아무것도 하지않음) 클릭을 여러번 연속으로 하면
+      // 간격이 벌어지는 버그 수정하기 위해 인덱스 증가 안되게함
+      toggleLeaving();
+      setIsRight(right);
+
+      const totalMovies = data.results.length; //총 영화 개수
+      const maxIndex =
+        totalMovies % offset === 0
+          ? Math.floor(totalMovies / offset) - 1
+          : Math.floor(totalMovies / offset);
+
+      right === 1
+        ? setIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
+        : setIndex((prev) => (prev === 0 ? maxIndex : prev - 1));
+      // left: -1, right: 1
+    }
+  };
+
   return (
     <Wrapper>
       <Title>{title}</Title>
-      <AnimatePresence initial={false} onExitComplete={toggleLeaving}>
+      <AnimatePresence
+        custom={isRight}
+        initial={false}
+        onExitComplete={toggleLeaving}
+      >
         <Row
-          initial={{ x: width + 5 }}
-          animate={{ x: 0 }}
-          exit={{ x: -width - 5 }}
-          transition={{ type: "tween", duration: 1 }}
+          custom={isRight}
+          variants={rowVar}
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          transition={{ type: "tween", duration: 1.1 }}
           key={index}
         >
+          <ArrowBox_L onClick={() => changeIndex(-1)}>
+            <i className="fa-solid fa-angle-left"></i>
+          </ArrowBox_L>
+
+          <ArrowBox_R onClick={() => changeIndex(1)}>
+            <i className="fa-solid fa-angle-right"></i>
+          </ArrowBox_R>
+
           {data?.results
             .slice(offset * index, offset * index + offset)
             .map((movie) => (

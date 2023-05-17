@@ -91,6 +91,7 @@ const Search = styled.form`
   position: relative;
   svg {
     height: 25px;
+    cursor: pointer;
   }
 `;
 
@@ -211,7 +212,7 @@ function Header() {
             initial={false}
             transition={{ type: "linear" }}
             animate={{ scaleX: searchOpen ? 1 : 0 }}
-            placeholder="제목, 장르, 배우로 검색해보세요."
+            placeholder="제목, 장르로 검색해보세요."
           />
         </Search>
       </Column>

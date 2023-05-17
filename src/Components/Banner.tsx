@@ -184,7 +184,9 @@ function Banner({
               onBoxClicked(Number(bannerInfo?.id));
             }}
           >
-            <span>상세정보</span>
+            <span>
+              <i className="fa-regular fa-circle-question"></i> 상세정보
+            </span>
           </InfoBtn>
         </InfoRating>
         {/* 별 rating + 버튼 */}

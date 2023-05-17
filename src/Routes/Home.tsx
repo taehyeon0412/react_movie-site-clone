@@ -47,18 +47,6 @@ function Home() {
     topTvShow
   );
 
-  /* const increaseIndex = () => {
-    if (data) {
-      if (leaving) return;
-      // leaving이 true이면 리턴(아무것도 하지않음) 클릭을 여러번 연속으로 하면
-      // 간격이 벌어지는 버그 수정하기 위해 인덱스 증가 안되게함
-      toggleLeaving();
-      const totalMovies = data.results.length - 1; //총 영화 개수 - 배너영화
-      const maxIndex = Math.ceil(totalMovies / offset) - 1; //올림=> 나눗셈이 4.2개 이면 올림해서 5개로만들어서 새로운 공간을 만듦
-      setIndex((prev) => (prev === maxIndex ? 0 : prev + 1)); //maxIndex가 아니면 인덱스 1만큼 증가
-    }
-  }; */
-
   /* const clickedMovie =
     bigMovieMatch?.params.movieID &&
     nowPlayingMovie?.results.find(
