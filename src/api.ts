@@ -5,7 +5,7 @@ export const LIST_TYPE = [
   "nowPlaying", //0
   "upcomingMovies", //1
   "popularMovies", //2
-  "topTvShow", //3
+  "topMovie", //3
 ]; // 영상 종류
 
 export const TV_LIST_TYPE = [
@@ -80,6 +80,15 @@ export function upComingMovies() {
 }
 //upcoming 영화
 
+export function topMovies() {
+  return fetch(
+    `${BASE_PATH}/movie/top_rated?language=ko&page=1&region=kr&api_key=${API_KEY}`
+  ).then((response) => response.json());
+}
+//top20 영화
+
+/* --------------------------------------------------------------------- */
+
 export function topTvShow() {
   return fetch(`${BASE_PATH}/tv/top_rated?language=ko&api_key=${API_KEY}`).then(
     (response) => response.json()
@@ -93,6 +102,8 @@ export function onTheAir() {
   ).then((response) => response.json());
 }
 //onTheAir tv
+
+/* -------------------------------------------------------------------- */
 
 export function similarData(mediaType: string, movieId: number) {
   return fetch(

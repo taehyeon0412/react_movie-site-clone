@@ -3,13 +3,13 @@ import {
   IGetMoviesResult,
   IMovie,
   LIST_TYPE,
+  TV_LIST_TYPE,
   getMovies,
   popularMovies,
   topTvShow,
   upComingMovies,
 } from "../api";
 import styled from "styled-components";
-import { motion, AnimatePresence } from "framer-motion";
 import Banner from "../Components/Banner";
 import Slider from "../Components/Slider";
 
@@ -43,7 +43,7 @@ function Home() {
   );
 
   const { data: topTvShows } = useQuery<IGetMoviesResult>(
-    [LIST_TYPE[3], "popularTvShows"],
+    [TV_LIST_TYPE[0], "topTvShows"],
     topTvShow
   );
 
@@ -106,7 +106,7 @@ function Home() {
           <Slider
             data={topTvShows as IGetMoviesResult}
             title={"Top20 Tv 드라마"}
-            listType={LIST_TYPE[3]}
+            listType={TV_LIST_TYPE[0]}
             mediaType={"tv"}
             menuName={"home"}
           ></Slider>
