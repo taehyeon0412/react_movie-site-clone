@@ -28,6 +28,10 @@ const Wrapper = styled.div<{ bgphoto: string }>`
   overflow-x: hidden;
   user-select: none;
   padding: 60px;
+
+  @media only screen and (max-width: 560px) {
+    background-size: 100%;
+  }
 `;
 //배너 전체화면
 
@@ -71,8 +75,8 @@ const Overview = styled.p`
     font-size: 1rem;
     width: 90%;
   }
-  @media only screen and (max-width: 500px) {
-    font-size: 1rem;
+  @media only screen and (max-width: 560px) {
+    font-size: 0.6rem;
     width: 100%;
   }
 

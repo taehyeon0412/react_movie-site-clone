@@ -47,6 +47,12 @@ const MovieModalBox = styled(motion.div)`
   ::-webkit-scrollbar {
     display: none;
   }
+
+  @media only screen and (max-width: 660px) {
+    width: 100%;
+    top: 0;
+    height: 100%;
+  }
 `;
 //모달창
 
@@ -93,6 +99,10 @@ const ModalSmallImg = styled.div`
     width: 100%;
   }
   position: absolute;
+
+  @media only screen and (max-width: 450px) {
+    width: 0%;
+  }
 `;
 //모달창 작은 이미지
 
@@ -103,6 +113,10 @@ const ModalTextBox = styled.div`
   width: 70%;
   padding-left: 2rem;
   bottom: 2rem;
+
+  @media only screen and (max-width: 450px) {
+    left: 0;
+  }
 `;
 // 모달창 제목박스
 
@@ -112,6 +126,10 @@ const ModalTitle = styled.h2`
   position: relative;
   font-weight: 700;
   margin-bottom: 10px;
+
+  @media only screen and (max-width: 560px) {
+    font-size: 1rem;
+  }
 `;
 //모달창 타이틀
 
@@ -120,11 +138,23 @@ const ModalSmallTitle = styled.h3`
   font-size: 1rem;
   position: relative;
   font-weight: 600;
+
+  @media only screen and (max-width: 560px) {
+    font-size: 0.8rem;
+  }
 `;
 //모달창 작은 타이틀
 
 const ModalInfoWrapper = styled.div`
   height: 50%;
+
+  @media only screen and (max-width: 560px) {
+    height: 45%;
+  }
+
+  @media only screen and (max-width: 450px) {
+    height: 40%;
+  }
 `;
 
 const ModalInfoBox = styled.div`
@@ -135,6 +165,11 @@ const ModalInfoBox = styled.div`
   height: 40%;
   padding-left: 1.5rem;
   margin-top: 0.5rem;
+
+  @media only screen and (max-width: 450px) {
+    left: 0;
+    width: 100%;
+  }
 `;
 //모달창 정보 박스
 
@@ -155,6 +190,10 @@ const ModalInfoItem = styled.span`
     border-radius: 50%;
     background-color: #7e7e7e;
   }
+
+  @media only screen and (max-width: 560px) {
+    font-size: 0.7rem;
+  }
 `;
 //모달창 정보 아이템
 
@@ -171,9 +210,16 @@ const ModalInfoRating = styled.div`
     margin: 0;
   }
   span {
+    font-size: 1rem;
     top: -3px;
     color: ${(props) => props.theme.white.lighter};
     font-weight: 700;
+  }
+
+  @media only screen and (max-width: 560px) {
+    span {
+      font-size: 0.7rem;
+    }
   }
 `;
 //모달창 별점
@@ -189,6 +235,16 @@ const ModalOverview = styled.div`
   ::-webkit-scrollbar {
     display: none;
   }
+
+  @media only screen and (max-width: 560px) {
+    font-size: 0.7rem;
+    width: 88%;
+  }
+
+  @media only screen and (max-width: 450px) {
+    font-size: 0.9rem;
+    width: 88%;
+  }
 `;
 //박스 클릭 모달창 정보 영화설명
 
@@ -196,6 +252,10 @@ const ModalSmilerSpan = styled.span`
   font-size: 1rem;
   font-weight: 700;
   margin-left: 1rem;
+
+  @media only screen and (max-width: 560px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const ModalSmilerDiv = styled.div`
@@ -206,6 +266,10 @@ const ModalSmilerDiv = styled.div`
   padding: 1rem;
   gap: 10px;
   margin: 0 auto;
+
+  @media only screen and (max-width: 450px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 `;
 //비슷한 영화 div
 
