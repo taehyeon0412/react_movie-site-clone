@@ -30,6 +30,7 @@ const Wrapper = styled.div<{ bgphoto: string }>`
 
   @media only screen and (max-width: 560px) {
     background-size: 100%;
+    min-height: 20rem;
   }
 `;
 //배너 전체화면

@@ -8,6 +8,7 @@ import {
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import useWindowDimensions from "../useWindow";
 
 const Nav = styled(motion.nav)`
   z-index: 99;
@@ -22,6 +23,10 @@ const Nav = styled(motion.nav)`
   padding: 10px 60px;
   color: white;
   user-select: none; //user-select:none 속성은 해당요소의 드레그, 더블클릭, 블럭지정을 막는다.
+
+  @media only screen and (max-width: 420px) {
+    padding: 10px 30px;
+  }
 `;
 
 const Column = styled.div`
@@ -45,6 +50,10 @@ const Logo = styled(motion.svg)`
     width: 100%;
     height: 100%;
   }
+
+  @media only screen and (max-width: 365px) {
+    margin-right: 20px;
+  }
 `;
 
 const Items = styled.ul`
@@ -53,6 +62,10 @@ const Items = styled.ul`
   align-items: center;
   height: 100%;
   gap: 0.5rem;
+
+  @media only screen and (max-width: 365px) {
+    gap: 0;
+  }
 `;
 
 interface ItemProps {
@@ -93,6 +106,12 @@ const Search = styled.form`
     height: 25px;
     cursor: pointer;
   }
+
+  @media only screen and (max-width: 530px) {
+    svg {
+      z-index: 98;
+    }
+  }
 `;
 
 const Input = styled(motion.input)`
@@ -110,6 +129,50 @@ const Input = styled(motion.input)`
   outline: none;
   ::placeholder {
     color: ${(props) => props.theme.white.lighter};
+  }
+
+  @media only screen and (max-width: 660px) {
+    width: 16rem;
+    left: -11rem;
+  }
+  @media only screen and (max-width: 600px) {
+    width: 12rem;
+    left: -7rem;
+    ::placeholder {
+      opacity: 0;
+    }
+  }
+  @media only screen and (max-width: 530px) {
+    width: 20rem;
+    left: -15rem;
+    z-index: 97;
+    ::placeholder {
+      opacity: 1;
+    }
+  }
+  @media only screen and (max-width: 490px) {
+    width: 16rem;
+    left: -11.5rem;
+    z-index: 97;
+    ::placeholder {
+      opacity: 1;
+    }
+  }
+  @media only screen and (max-width: 415px) {
+    width: 14rem;
+    left: -11rem;
+    z-index: 97;
+    ::placeholder {
+      opacity: 0;
+    }
+  }
+  @media only screen and (max-width: 365px) {
+    width: 13rem;
+    left: -10rem;
+    z-index: 97;
+    ::placeholder {
+      opacity: 0;
+    }
   }
 `;
 
@@ -139,6 +202,8 @@ const navVar = {
 //스크롤 애니메이션
 
 function Header() {
+  const width = useWindowDimensions(); //window width 추적
+  const [svgWidth, setSvgWidth] = useState(0); //돋보기svg 애니메이션 위치
   const tvMatch = useRouteMatch("/tv");
   const movieMatch = useRouteMatch("/movie");
   const [searchOpen, setSearchOpen] = useState(false);
@@ -159,6 +224,25 @@ function Header() {
   };
 
   //검색바
+
+  useEffect(() => {
+    if (width > 660) {
+      setSvgWidth(-14.5);
+    } else if (width > 600) {
+      setSvgWidth(-10.5);
+    } else if (width > 530) {
+      setSvgWidth(-6.5);
+    } else if (width > 490) {
+      setSvgWidth(-14.5);
+    } else if (width > 415) {
+      setSvgWidth(-11);
+    } else if (width > 370) {
+      setSvgWidth(-10.5);
+    } else if (width > 300) {
+      setSvgWidth(-9.5);
+    }
+  });
+  //검색svg 위치 조정
 
   return (
     <Nav variants={navVar} initial="top" animate={navAnimation}>
@@ -194,7 +278,7 @@ function Header() {
         <Search onSubmit={handleSubmit(onValid)}>
           <motion.svg
             onClick={toggleSearch}
-            animate={{ x: searchOpen ? `-14.5rem` : 0 }}
+            animate={{ x: searchOpen ? `${svgWidth}rem` : 0 }}
             transition={{ type: "linear" }}
             fill="currentColor"
             viewBox="0 0 20 20"

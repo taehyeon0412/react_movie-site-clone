@@ -19,6 +19,17 @@ const SearchResultDiv = styled.div`
   margin-left: 3rem;
   margin-right: 3rem;
   background-color: transparent;
+
+  @media only screen and (max-width: 660px) {
+    width: 95%;
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
+  @media only screen and (max-width: 520px) {
+    width: 95%;
+    margin-left: 0.5rem;
+    margin-right: 0;
+  }
 `;
 //검색결과 div
 
