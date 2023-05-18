@@ -42,7 +42,7 @@ function Movie() {
   );
 
   const { data: topMovie } = useQuery<IGetMoviesResult>(
-    [LIST_TYPE[2], "topMovies"],
+    [LIST_TYPE[3], "topMovies"],
     topMovies
   );
 
@@ -61,7 +61,7 @@ function Movie() {
 
           <Slider
             data={topMovie as IGetMoviesResult}
-            title={"현재 상영 영화"}
+            title={"Top20 영화"}
             listType={LIST_TYPE[3]}
             mediaType={"movie"}
             menuName={"movie"}

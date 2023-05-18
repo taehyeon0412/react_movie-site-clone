@@ -61,7 +61,7 @@ function Home() {
       ) : (
         <>
           <Banner
-            bannerInfo={popularMovie?.results[0] as IMovie}
+            bannerInfo={popularMovie?.results[5] as IMovie}
             detailSearchUrl={`home/banner`}
             requestUrl={"movie"}
             menuName={"home"}

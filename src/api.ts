@@ -128,3 +128,28 @@ useQuery를 이용해서 데이터를 불러올때 ex)popular,upcoming등등
 많은 파트가 있는데 거기서 하나만 콕 찝어서 불러올수 없으니까 해당영화에
 매치되는 url을 만들어서 거기있는 정보만 빼오기 위해서 따로 만듬 
 */
+
+interface ISearch {
+  id: number;
+  overview: string;
+  title?: string;
+  name?: string;
+  poster_path?: string;
+  backdrop_path?: string;
+  media_type: string;
+}
+
+export interface IGetSearchResult {
+  page: number;
+  results: ISearch[]; // 영화 데이터 interface의 []
+  total_pages: number;
+  total_results: number;
+}
+
+export function searchData(keyword: string) {
+  return fetch(
+    `${BASE_PATH}/search/multi?language=ko&region=kr&api_key=${API_KEY}&query=${keyword}`
+  )
+    .then((response) => response.json())
+    .catch((err) => err);
+}

@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import { IGetMoviesResult, IMovie, getMovies, popularMovies } from "../api";
+import { IMovie } from "../api";
 import { makeImagePath } from "../utils";
-import { useQuery } from "react-query";
 import { BannerSize } from "../atoms";
 import { useRecoilValue } from "recoil";
 import ReactStars from "react-stars";

@@ -51,6 +51,10 @@
     "@tanstack/react-query-devtools": "^4.29.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-stars": "^2.2.1",
-    "@types/styled-components": "^5.1.26"
+    "@types/styled-components": "^5.1.26",
+    "html-webpack-plugin": "^5.5.1",
+    "webpack": "^5.83.1",
+    "webpack-cli": "^5.1.1",
+    "webpack-dev-server": "^4.15.0"
   }
 }
