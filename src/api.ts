@@ -129,13 +129,10 @@ useQuery를 이용해서 데이터를 불러올때 ex)popular,upcoming등등
 매치되는 url을 만들어서 거기있는 정보만 빼오기 위해서 따로 만듬 
 */
 
-interface ISearch {
+export interface ISearch {
   id: number;
-  overview: string;
-  title?: string;
-  name?: string;
-  poster_path?: string;
-  backdrop_path?: string;
+  poster_path: string;
+  backdrop_path: string;
   media_type: string;
 }
 

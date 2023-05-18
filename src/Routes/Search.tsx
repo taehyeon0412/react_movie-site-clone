@@ -1,9 +1,10 @@
 import { useQuery } from "react-query";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
-import { IGetSearchResult, searchData } from "../api";
-import { motion } from "framer-motion";
+import { IGetSearchResult, ISearch, searchData } from "../api";
+import { AnimatePresence, motion } from "framer-motion";
 import { makeImagePath } from "../utils";
+import Modal from "../Components/Modal";
 
 const Wrapper = styled.div`
   background: black;
@@ -25,6 +26,15 @@ const SearchResultSpan = styled.div`
   padding-bottom: 3rem;
 `;
 //검색결과 span
+
+const SearchNoResultSpan = styled.div`
+  height: 80%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+`;
 
 const Row = styled(motion.div)`
   display: grid;
@@ -106,6 +116,18 @@ function Search() {
   );
   //search api 데이터 불러오기
 
+  const history = useHistory();
+  const onBoxClicked = (menuName: string, id: number) => {
+    history.push(`/search/${menuName}/${id}?keyword=${keyword}`);
+    console.log(menuName, id, keyword);
+  };
+  //id,media_type으로 데이터 불러오기
+
+  const modalMatch = useRouteMatch<{ menuName: string; movieID: string }>(
+    `/search/:menuName/:movieID`
+  );
+  //클릭하고 있는 박스 모달 매치
+
   return (
     <Wrapper>
       <SearchResultDiv>
@@ -123,15 +145,37 @@ function Search() {
                 whileHover="hover"
                 initial="normal"
                 transition={{ type: "tween" }}
+                onClick={() => onBoxClicked(movie.media_type, movie.id)}
               ></Box>
             ))}
           </Row>
         ) : (
-          <SearchResultSpan>검색결과가 없습니다.</SearchResultSpan>
+          <SearchNoResultSpan>
+            "{keyword}"의 검색 결과가 없습니다.
+          </SearchNoResultSpan>
         )}
       </SearchResultDiv>
+
+      <AnimatePresence>
+        {modalMatch ? (
+          <Modal
+            dataId={Number(modalMatch.params.movieID)}
+            mediaType={modalMatch.params.menuName || ""}
+            menuName={"search"}
+            listType={modalMatch?.params.menuName || ""}
+            returnUrl={`/search?keyword=${keyword}`}
+          />
+        ) : null}
+      </AnimatePresence>
     </Wrapper>
   );
 }
 
 export default Search;
+
+//media_type = movie,tv
+//movie.id = id
+//menuName = home,banner등
+//mediaType = tv,movie
+//`/${menuName}/${listType}/:movieID`
+//search/movie/496243

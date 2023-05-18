@@ -30,7 +30,7 @@ function App() {
           <Movie />
         </Route>
 
-        <Route path="/search">
+        <Route path={["/search", "/search/:menuName/:movieID"]}>
           <Search />
         </Route>
 

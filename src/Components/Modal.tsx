@@ -287,9 +287,16 @@ interface IModal {
   listType: string;
   mediaType: string;
   menuName: string;
+  returnUrl?: string;
 }
 
-export function Modal({ dataId, listType, mediaType, menuName }: IModal) {
+export function Modal({
+  dataId,
+  listType,
+  mediaType,
+  menuName,
+  returnUrl,
+}: IModal) {
   const { data } = useQuery<IMovie>(
     [listType + dataId, "detail" + dataId],
     () => detailData(mediaType, dataId)
@@ -308,12 +315,10 @@ export function Modal({ dataId, listType, mediaType, menuName }: IModal) {
   //클릭하고 있는 영화 모달 매치
 
   const overlayClicked = () => {
-    if (menuName === "home") {
-      history.push("/");
-    } else if (menuName === "tv") {
-      history.push("/tv");
-    } else if (menuName === "movie") {
-      history.push("/movie");
+    if (returnUrl) {
+      history.push(returnUrl);
+    } else {
+      history.push(`/${menuName}`);
     }
   };
 
