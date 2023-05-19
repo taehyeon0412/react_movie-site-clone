@@ -1,0 +1,60 @@
+1.TypeScript
+2.framer-motion (애니메이션)
+3.react-dom(useHistory,useRouteMatch)
+4.react-query
+5.recoil
+6.styled components
+7.react-hook-form
+8.font-fontawesome, react-icons
+9.react-stars
+
+
+
+체크리스트
+ 
+-header-
+1.네비게이션 아이템 호버시 밑줄 그어짐 //완료
+2.네비게이션 아이템 클릭시 밑줄 그어짐 상태 유지 //완료
+3.영화 사이트 아이콘 바꾸기 //유지
+4.미디어 작아지면 input 위치 바꾸기 //완료
+
+-home-
+1.사이트화면 커질때 작아질때에 맞춰서 반응형으로 만들기 //완료
+2.슬라이더 박스 hover하면 info 나오게 만들기 (쿠팡처럼 멋있게수정) //안하기로함
+3.슬라이더 화살표 만들기 //완료
+-슬라이더에 hover하면 화살표 생김 //완료
+-화살표에 hover하면 스케일 조금 커짐 //완료
+-끝페이지까지 가면 화살표 사라짐 
+-왼쪽 오른쪽 애니메이션 다르게 하기 //완료
+4.영화정보 모달창 튀는 현상 수정하기 //해결이 안됨
+5.슬라이더 작동 오류 수정하기 //완료
+6.모달창 띄우고 난 뒤 홈으로 돌아왔을때 transform-origin 안되는 현상 수정하기 / 힌트 : originX 사용??
+7.슬라이더 제목 div 만들기 - 인기작 top 20 //완료
+8.배너에 상세정보버튼, 재생버튼 추가하기 //50% 완료
+9.배너에 상세정보버튼 누르면 모달창 띄우기 //완료
+10.박스 클릭시 url주소 /:listType/:movieID로 뜨게하기 //완료
+
+-search-
+1.인풋값 2글자 미만일시 경고문구 나오게 하기
+2.form submit하면 input값 비우기
+3.미디어 줄이면 결과값 width 크게하기 //완료
+
+-각 요소들 컴포넌트화
+슬라이더 //완료
+배너 //완료
+헤더 // 완료
+모달 //완료
+-listType+movie.id 가 일치할때 모달창 띄움 //완료
+-모달창 @media 크기별로 다르게 설정 //완료
+-모달창에 x 버튼 만들기 //완료
+
+tv API 정보 수정하기
+-tv는 정보가 안나옴 현재 movie에 있는 정보를 받아와서 그런것같음 //완료
+
+-tv 화면 만들기 //완료
+
+
+
+
+
+API참조 : https://www.themoviedb.org/?language=ko
