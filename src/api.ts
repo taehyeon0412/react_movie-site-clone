@@ -43,6 +43,8 @@ export interface IMovie {
   runtime: number;
   genres: IGenre[];
   original_title: string;
+  first_air_date: string;
+  name: string;
 }
 //영화 상세정보 인터페이스
 

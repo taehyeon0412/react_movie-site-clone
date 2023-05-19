@@ -64,9 +64,9 @@ const ModalCoverImg = styled.div<{ bgphoto: string }>`
   background-image: linear-gradient(
       to left,
       rgba(0, 0, 0, 0),
-      rgba(0, 0, 0, 0.4)
+      rgba(0, 0, 0, 0.1)
     ),
-    linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.2)),
+    linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0)),
     url(${(props) => props.bgphoto});
 
   position: relative;
@@ -88,6 +88,10 @@ const ModalCancelBtn = styled.button`
 
   &:hover {
     opacity: 1;
+  }
+
+  i {
+    font-size: 20px;
   }
 `;
 
@@ -351,8 +355,10 @@ export function Modal({
             </ModalCancelBtn>
 
             <ModalTextBox>
-              <ModalTitle>{data?.title}</ModalTitle>
-              <ModalSmallTitle>{data?.original_title}</ModalSmallTitle>
+              <ModalTitle>{data?.title ? data?.title : data?.name}</ModalTitle>
+              <ModalSmallTitle>
+                {data?.original_title ? data?.original_title : ""}
+              </ModalSmallTitle>
             </ModalTextBox>
           </ModalCoverImg>
           {/* 대형 이미지 */}
@@ -371,7 +377,7 @@ export function Modal({
                 <ModalInfoItem>
                   {data?.release_date
                     ? data?.release_date.slice(0, 4)
-                    : "정보없음"}
+                    : data?.first_air_date.slice(0, 4)}
                 </ModalInfoItem>
                 {/* 개봉일 */}
 
