@@ -32,6 +32,11 @@ const Wrapper = styled.div<{ bgphoto: string }>`
     background-size: 100%;
     min-height: 20rem;
   }
+  @media only screen and (max-width: 450px) {
+    background-size: 100%;
+    min-height: 20rem;
+    height: 55vh;
+  }
 `;
 //배너 전체화면
 

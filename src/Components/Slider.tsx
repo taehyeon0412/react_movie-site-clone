@@ -6,6 +6,8 @@ import useWindowDimensions from "../useWindow";
 import { makeImagePath } from "../utils";
 import { useHistory, useRouteMatch } from "react-router-dom";
 import Modal from "./Modal";
+import { isMobile } from "react-device-detect";
+import * as rdd from "react-device-detect";
 
 const Wrapper = styled(motion.div)`
   position: relative;
@@ -38,7 +40,7 @@ const ArrowBtn = styled(motion.div)`
   display: flex;
   top: 40%;
   background-color: rgba(0, 0, 0, 0.3);
-  opacity: 0;
+  opacity: ${isMobile ? 1 : 0};
   z-index: 98;
 
   i {
@@ -228,6 +230,8 @@ function Slider({ data, title, listType, mediaType, menuName }: ISlider) {
       // left: -1, right: 1
     }
   };
+
+  /*  console.log(isMobile); */
 
   return (
     <Wrapper>

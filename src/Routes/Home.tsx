@@ -47,13 +47,6 @@ function Home() {
     topTvShow
   );
 
-  /* const clickedMovie =
-    bigMovieMatch?.params.movieID &&
-    nowPlayingMovie?.results.find(
-      (movie) => movie.id === +bigMovieMatch.params.movieID
-    );
-  //(조건1)이 &&(참)이면 (조건2)을 만족하는 항목을 반환한다. */
-
   return (
     <Wrapper>
       {isLoading ? (
