@@ -6,7 +6,7 @@ import {
   useScroll,
 } from "framer-motion";
 import { Link, useHistory, useRouteMatch } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import useWindowDimensions from "../useWindow";
 
@@ -202,6 +202,7 @@ const navVar = {
 //스크롤 애니메이션
 
 function Header() {
+  const searchInput = useRef() as React.RefObject<HTMLInputElement>; //서치인풋 추적
   const width = useWindowDimensions(); //window width 추적
   const [svgWidth, setSvgWidth] = useState(0); //돋보기svg 애니메이션 위치
   const tvMatch = useRouteMatch("/tv");
@@ -209,7 +210,10 @@ function Header() {
   const [searchOpen, setSearchOpen] = useState(false);
   const { scrollYProgress } = useScroll(); //scrollYProgress는 0~1사이 소수점값
   const navAnimation = useAnimation();
-  const toggleSearch = () => setSearchOpen((prev) => !prev);
+  const toggleSearch = () => {
+    setSearchOpen((prev) => !prev);
+    searchInput.current?.focus();
+  };
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
     if (latest < 0.1) navAnimation.start("top");
@@ -295,6 +299,7 @@ function Header() {
               required: true,
               minLength: 2,
             })}
+            ref={searchInput}
             initial={false}
             transition={{ type: "linear" }}
             animate={{ scaleX: searchOpen ? 1 : 0 }}
