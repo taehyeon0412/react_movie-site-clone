@@ -202,7 +202,7 @@ const navVar = {
 //스크롤 애니메이션
 
 function Header() {
-  const searchInput = useRef() as React.RefObject<HTMLInputElement>; //서치인풋 추적
+  /* const searchInput = useRef() as React.RefObject<HTMLInputElement>; //서치인풋 추적 */
   const width = useWindowDimensions(); //window width 추적
   const [svgWidth, setSvgWidth] = useState(0); //돋보기svg 애니메이션 위치
   const tvMatch = useRouteMatch("/tv");
@@ -212,7 +212,7 @@ function Header() {
   const navAnimation = useAnimation();
   const toggleSearch = () => {
     setSearchOpen((prev) => !prev);
-    searchInput.current?.focus();
+    /* searchInput.current?.focus(); */
   };
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
@@ -299,7 +299,6 @@ function Header() {
               required: true,
               minLength: 2,
             })}
-            ref={searchInput}
             initial={false}
             transition={{ type: "linear" }}
             animate={{ scaleX: searchOpen ? 1 : 0 }}
