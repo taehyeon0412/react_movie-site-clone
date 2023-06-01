@@ -225,6 +225,7 @@ function Header() {
   const { register, handleSubmit } = useForm<IForm>();
   const onValid = (data: IForm) => {
     history.push(`/search?keyword=${data.keyword}`);
+    /* console.log("제출됨"); */
   };
 
   //검색바
@@ -299,6 +300,7 @@ function Header() {
               required: true,
               minLength: 2,
             })}
+            /* ref={searchInput} */
             initial={false}
             transition={{ type: "linear" }}
             animate={{ scaleX: searchOpen ? 1 : 0 }}

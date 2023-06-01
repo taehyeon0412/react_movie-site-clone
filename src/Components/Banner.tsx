@@ -24,7 +24,7 @@ const Wrapper = styled.div<{ bgphoto: string }>`
     ),
     linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 1)),
     url(${(props) => props.bgphoto});
-  overflow-x: hidden;
+  overflow: hidden;
   user-select: none;
   padding: 60px;
 
@@ -55,9 +55,9 @@ const Title = styled.h2`
     font-size: 1.5rem;
     width: 100%;
   }
-  @media only screen and (max-width: 360px) {
+  @media only screen and (max-width: 400px) {
     font-size: 1.5rem;
-    margin: 0;
+    margin-top: 0;
   }
 `;
 //영화제목
@@ -85,8 +85,8 @@ const Overview = styled.p`
     width: 100%;
   }
 
-  @media only screen and (max-width: 360px) {
-    opacity: 0;
+  @media only screen and (max-width: 400px) {
+    display: none;
   }
 `;
 //영화설명
@@ -108,6 +108,9 @@ const InfoRating = styled.div`
     top: -3px;
     color: ${(props) => props.theme.white.darker};
     font-weight: 700;
+  }
+  @media only screen and (max-width: 400px) {
+    margin-left: 0;
   }
 `;
 // 별점
@@ -171,7 +174,9 @@ function Banner({
       bgphoto={makeImagePath(bannerInfo?.backdrop_path || "", bannerBgSize)}
     >
       <>
-        <Title>{bannerInfo?.title}</Title>
+        <Title>
+          {bannerInfo?.title ? bannerInfo?.title : bannerInfo?.name}
+        </Title>
         <Overview>{bannerInfo?.overview}</Overview>
         <InfoRating>
           <ReactStars
