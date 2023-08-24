@@ -1,3 +1,8 @@
+
+![홈페이지 ](https://github.com/taehyeon0412/canvas_JS_mystyle/assets/71374539/19c9e66a-fc8d-4f61-931b-3f8007596a92)
+
+
+
 ## **🛠사용 기술 및 라이브러리**
 
 - Typescript
