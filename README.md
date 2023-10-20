@@ -58,6 +58,10 @@ API를 fetch 하여 영화, TV의 정보를 받은 뒤 화면 크기에 따라 �
 - https://www.themoviedb.org/?language=ko : 영화 정보 API
 
 
+
+
+
+
 💡 성장 경험
 
 ### 반응형 웹사이트에 대한 이해
