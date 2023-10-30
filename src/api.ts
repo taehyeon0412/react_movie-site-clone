@@ -63,28 +63,28 @@ export interface IGetMoviesResult {
 
 export function getMovies() {
   return fetch(
-    `${BASE_PATH}/movie/now_playing?language=ko&region=kr&api_key=${API_KEY}`
+    `${BASE_PATH}/movie/now_playing?language=ko&page=2&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
 //now_playing 영화
 
 export function popularMovies() {
   return fetch(
-    `${BASE_PATH}/movie/popular?language=ko&region=kr&api_key=${API_KEY}`
+    `${BASE_PATH}/movie/popular?language=ko&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
 //popular 영화
 
 export function upComingMovies() {
   return fetch(
-    `${BASE_PATH}/movie/upcoming?language=ko&region=kr&api_key=${API_KEY}`
+    `${BASE_PATH}/movie/upcoming?language=ko&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
 //upcoming 영화
 
 export function topMovies() {
   return fetch(
-    `${BASE_PATH}/movie/top_rated?language=ko&page=1&region=kr&api_key=${API_KEY}`
+    `${BASE_PATH}/movie/top_rated?language=ko&api_key=${API_KEY}`
   ).then((response) => response.json());
 }
 //top20 영화
