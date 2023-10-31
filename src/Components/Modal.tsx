@@ -12,6 +12,7 @@ import { useHistory, useRouteMatch } from "react-router-dom";
 import { makeImagePath } from "../utils";
 import { useQuery } from "react-query";
 import ReactStars from "react-stars";
+import { useEffect } from "react";
 
 const GlobalStyle = createGlobalStyle`
   html{overflow: hidden;}

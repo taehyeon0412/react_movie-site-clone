@@ -18,6 +18,19 @@ function App() {
     return () => window.removeEventListener("resize", debouncedResizeHandler);
   }, [setWidth]);
 
+  useEffect(() => {
+    const preventGoBack = () => {
+      window.history.go(1);
+      console.log("prevent go back!");
+    };
+
+    window.history.pushState(null, "", window.location.pathname);
+    window.addEventListener("popstate", preventGoBack);
+
+    return () => window.removeEventListener("popstate", preventGoBack);
+  }, []);
+  //뒤로가기 막기
+
   return (
     <HashRouter basename={process.env.PUBLIC_URL}>
       <Header />
