@@ -11,6 +11,7 @@ import {
 import styled from "styled-components";
 import Banner from "../Components/Banner";
 import Slider from "../Components/Slider";
+import { darkTheme } from "./../../../react_master_study/src/theme";
 
 const Wrapper = styled.div`
   background: black;
